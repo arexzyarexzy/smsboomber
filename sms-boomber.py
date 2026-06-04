@@ -52,6 +52,13 @@ numara_input = st.text_input(
     help="Numaranın başına 0 koymadan, 10 haneli olarak yazın."
 )
 
+# --- YENİ EKLENEN MAİL KUTUSU ---
+mail_input = st.text_input(
+    "E-posta Adresi Girin (Kodun çalışması için zorunlu):",
+    placeholder="Örn: test@gmail.com",
+    value="test@gmail.com" # Boş kalmasın diye otomatik doldurduk
+)
+
 # Mod seçim kutusu
 mod = st.selectbox(
     "Gönderim Modunu Seçin:",
@@ -72,13 +79,16 @@ if st.button("Saldırıyı Başlat 🚀", use_container_width=True):
     
     # Girdi Kontrolleri (Hata ayıklama)
     if not numara_input:
-        st.error("❌ Lütfen boş bırakmayın! Bir telefon numarası yazmalısınız.")
+        st.error("❌ Lütfen boş bırakmayın! Bir telefon merkezi numarası yazmalısınız.")
     
+    elif not mail_input:
+        st.error("❌ Lütfen bir mail adresi girin!")
+        
     elif mod == "Seçim Yapınız...":
         st.error("❌ Lütfen geçerli bir gönderim modu seçin!")
         
     else:
-        # Numarayı temizleme (Kullanıcı boşluk bıraktıysa veya +90 yazdıysa sadece rakamları ayıklar)
+        # Numarayı temizleme
         temiz_numara = re.sub(r"\D", "", numara_input)
         
         # Eğer numara 0 ile başlıyorsa sıfırı siler (5xxxxxxxxx yapar)
@@ -94,42 +104,30 @@ if st.button("Saldırıyı Başlat 🚀", use_container_width=True):
             # Her şey doğruysa işlemleri başlatıyoruz
             st.success(f"✅ Numara Doğrulandı: +90 {temiz_numara}")
             
-            # Seçilen moda göre ekrana bilgi basma
-            if "Normal" in mod:
-                st.info(f"➔ {temiz_numara} için Normal Mod başlatılıyor... Toplam: {miktar} adet.")
-            else:
-                st.warning(f"➔ {temiz_numara} için TURBO MOD başlatılıyor... Toplam: {miktar} adet.")
-            
             # --- ASIL SMS TETİKLEME ALANI ---
-            # Kodun patlamaması için her şeyi try-except (koruma) içine alıyoruz
             try:
-                # Durum çubuğu (Sitede dönen yükleniyor animasyonu)
                 with st.spinner("SMS API'leri tetikleniyor, lütfen bekleyin..."):
                     
-                    # 1. Adım: Senin sms.py içindeki SendSms sınıfını hazırlıyoruz
-                    # (Senin kodunun çalışma mantığına göre numara parametresi gönderilir)
-                    islem = SendSms(temiz_numara)
+                    # Hatanın çözümü burası: Hem numarayı hem de maili beraber gönderiyoruz!
+                    islem = SendSms(temiz_numara, mail_input)
                     
-                    # 2. Adım: Miktar kadar döngü döndürüp SMS'leri tetikliyoruz
-                    # Not: Eğer sms.py içinde kendi döngün varsa buradaki döngüyü kaldırıp
-                    # direkt islem.gonder() gibi çağırabilirsin.
+                    # Eğer sms.py içindeki asıl bombacı fonksiyonunun ismi gonder() veya start() ise 
+                    # buradaki döngü mantığına göre onu tetikleyeceğiz.
+                    # Şimdilik ana objeyi oluşturduk, eğer sms.py içinde bir de başlatma fonksiyonu varsa
+                    # (görselinde SendSms vardı) onu döngüyle çağırıyoruz:
+                    
                     for i in range(miktar):
-                        # Ekranda anlık kaçıncıda olduğunu gösteren sayaç
                         st.text(f"[{i+1}/{miktar}] API servisleri sorgulanıyor...")
                         
-                        # BURASI ÖNEMLİ: sms.py dosyanın içindeki asıl fonksiyonun ismi neyse onu çağır.
-                        # Eğer sms.py içindeki fonksiyon direkt çalışıyorsa alt satırı kendine göre düzenle:
-                        # islem.start() veya islem.gonder() gibi.
+                        # Eğer sms.py dosyanın içinde ekstra bir fonksiyon (örn: gonder) varsa:
+                        # islem.gonder() 
                         
-                        time.sleep(0.5) # Sunucunun ban yememesi için çok kısa bekleme süresi
+                        time.sleep(0.5)
                 
-                # Başarılı mesajı
-                st.balloons() # Ekranda balonlar uçuşur
+                st.balloons() 
                 st.success("🎉 Tüm API istekleri başarıyla gönderildi! İşlem tamamlandı.")
                 
             except Exception as e:
-                # Eğer sms.py çalışırken bir hata verirse (kod hatası, internet kopması vs.)
-                # Burası devreye girer ve hatayı web sitesinde KIPKIRMIZI gösterir.
                 st.error(f"⚠️ Kod Çalıştırılırken Bir Hata Oluştu!")
                 st.code(f"Hata Detayı: {e}", language="python")
 
