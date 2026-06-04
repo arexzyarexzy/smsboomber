@@ -8,13 +8,12 @@ try:
 except ImportError:
     st.error("HATA: sms.py dosyası bulunamadı!")
 
-# 1. Sayfa Ayarları (Karanlık Mod Sabitleme)
+# 1. Sayfa Ayarları
 st.set_page_config(page_title="WYREX SYSTEM", page_icon="🔴", layout="centered")
 
-# 2. TAMAMEN BAŞTAN YARATILAN KIRMIZI NEON TASARIM (CSS)
+# 2. KIRMIZI NEON TASARIM VE YAZI YAZMAYI ENGELLEYEN CSS
 st.markdown("""
     <style>
-        /* Arka plan ve genel metin renklerini manipüle etme */
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
         
         * {
@@ -51,7 +50,6 @@ st.markdown("""
             margin-bottom: 30px;
         }
         
-        /* Giriş kutuları başlıkları */
         label {
             color: #ff99aa !important;
             text-shadow: 0 0 3px #ff003c;
@@ -73,18 +71,25 @@ st.markdown("""
             box-shadow: 0 0 25px #ff003c, 0 0 50px #ff0000;
             transform: scale(1.02);
         }
+
+        /* 🔒 SİHİRLİ DOKUNUŞ: Seçim kutusunda arama yapmayı / yazı yazmayı kapatır */
+        div[data-baseweb="select"] input {
+            pointer-events: none !important;
+            caret-color: transparent !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 
-# Başlık Kısmı (Şimşekler kalktı, Wyrex System geldi)
+# Başlık Kısmı
 st.markdown('<div class="neon-title">WYREX SYSTEM</div>', unsafe_allow_html=True)
 st.markdown('<div class="neon-sub">CORE SMS PROTOCOL ENABLED</div>', unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# 3. Temel Giriş Alanları (Aynı mantık, yeni görünüm)
+# 3. Giriş Alanları
 numara_input = st.text_input("🎯 HEDEF TELEFON NUMARASI:", placeholder="Örn: 5051234567")
 gizli_mail = "arexzy_panel@gmail.com"
 
+# Seçim Kutusu (Artık içine yazı yazılamaz, sadece tıklanır)
 mod = st.selectbox(
     "⚙️ OPERASYON MODU SEÇİN:",
     ["Seçim Yapınız...", "1- SMS Gönder (Normal Mod - Belirli Sayıda)", "2- SMS Gönder (Turbo Mod - Sonsuz/Durdurana Kadar)"]
@@ -124,10 +129,8 @@ if not st.session_state.saldiri_aktif:
 
 # Döngü ve Gönderim Paneli
 if st.session_state.saldiri_aktif:
-    # Kırmızı Tehlike Uyarısı
     st.markdown("<h4 style='color: #ff003c; text-align: center; text-shadow: 0 0 5px #ff003c;'>⚠️ SİSTEM AKTİF: İSTEKLER GÖNDERİLİYOR ⚠️</h4>", unsafe_allow_html=True)
     
-    # Kırmızı Durdurma Butonu
     dur_butonu = st.button("🔴 SİSTEMİ DURDUR (STOP)", use_container_width=True)
     if dur_butonu:
         st.session_state.saldiri_aktif = False
