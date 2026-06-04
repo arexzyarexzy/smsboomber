@@ -8,94 +8,147 @@ try:
 except ImportError:
     st.error("HATA: sms.py dosyası bulunamadı!")
 
-# 1. Sayfa Ayarları
-st.set_page_config(page_title="Arexzy VIP SMS Panel", page_icon="⚡", layout="centered")
+# 1. Sayfa Ayarları (Karanlık Mod Sabitleme)
+st.set_page_config(page_title="WYREX SYSTEM", page_icon="🔴", layout="centered")
 
-# Sayfa Başlıkları
+# 2. TAMAMEN BAŞTAN YARATILAN KIRMIZI NEON TASARIM (CSS)
 st.markdown("""
     <style>
-        .main-title { text-align: center; color: #00ffcc; font-family: monospace; font-size: 40px; font-weight: bold; text-shadow: 0px 0px 10px #00ffcc; }
-        .sub-title { text-align: center; color: #ff0055; font-family: monospace; font-size: 16px; margin-bottom: 30px; }
+        /* Arka plan ve genel metin renklerini manipüle etme */
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        
+        * {
+            font-family: 'Share Tech Mono', monospace !important;
+        }
+        
+        /* Büyük Neon Başlık */
+        .neon-title {
+            text-align: center;
+            color: #ff003c;
+            font-size: 50px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px #ff003c, 0 0 20px #ff003c, 0 0 40px #ff0000;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+        
+        /* Alt Başlık */
+        .neon-sub {
+            text-align: center;
+            color: #ff99aa;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px #ff003c;
+            margin-bottom: 30px;
+        }
+        
+        /* Kırmızı Çizgi */
+        hr {
+            border: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ff003c, transparent);
+            margin-bottom: 30px;
+        }
+        
+        /* Giriş kutuları başlıkları */
+        label {
+            color: #ff99aa !important;
+            text-shadow: 0 0 3px #ff003c;
+        }
+        
+        /* Buton Tasarımları (Kırmızı Neon) */
+        div.stButton > button {
+            background-color: #1a0005 !important;
+            color: #ff003c !important;
+            border: 2px solid #ff003c !important;
+            box-shadow: 0 0 10px #ff003c;
+            font-weight: bold !important;
+            font-size: 18px !important;
+            transition: all 0.3s ease;
+        }
+        div.stButton > button:hover {
+            background-color: #ff003c !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 25px #ff003c, 0 0 50px #ff0000;
+            transform: scale(1.02);
+        }
     </style>
 """, unsafe_allow_html=True)
-st.markdown('<div class="main-title">⚡ AREXZY PANEL ⚡</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">Web Tabanlı Gelişmiş SMS Gönderim Sistemi</div>', unsafe_allow_html=True)
-st.write("---")
 
-st.subheader("📋 Gönderim Bilgileri")
+# Başlık Kısmı (Şimşekler kalktı, Wyrex System geldi)
+st.markdown('<div class="neon-title">WYREX SYSTEM</div>', unsafe_allow_html=True)
+st.markdown('<div class="neon-sub">CORE SMS PROTOCOL ENABLED</div>', unsafe_allow_html=True)
+st.markdown("<hr>", unsafe_allow_html=True)
 
-# Kullanıcı Girdileri (Mail kutusu kaldırıldı!)
-numara_input = st.text_input("Hedef Telefon Numarasını Girin:", placeholder="Örn: 5051234567")
-
-# Arka planda kullanılacak gizli mail adresi
+# 3. Temel Giriş Alanları (Aynı mantık, yeni görünüm)
+numara_input = st.text_input("🎯 HEDEF TELEFON NUMARASI:", placeholder="Örn: 5051234567")
 gizli_mail = "arexzy_panel@gmail.com"
 
 mod = st.selectbox(
-    "Gönderim Modunu Seçin:",
+    "⚙️ OPERASYON MODU SEÇİN:",
     ["Seçim Yapınız...", "1- SMS Gönder (Normal Mod - Belirli Sayıda)", "2- SMS Gönder (Turbo Mod - Sonsuz/Durdurana Kadar)"]
 )
 
-# Turbo modda miktar çubuğunu gizleme mantığı
+# Filtreleme: Turbo modda miktar çubuğunu gizle
 miktar = 0
 if mod == "1- SMS Gönder (Normal Mod - Belirli Sayıda)":
-    miktar = st.slider("Gönderilecek SMS Miktarı (Döngü Sayısı):", min_value=1, max_value=100, value=10)
+    miktar = st.slider("📊 GÖNDERİLECEK SMS MİKTARI:", min_value=1, max_value=100, value=10)
 
-st.write("---")
+st.markdown("<hr>", unsafe_allow_html=True)
 
-# Saldırı Durumu Kontrolü
+# 4. Saldırı Durumu Yönetimi
 if "saldiri_aktif" not in st.session_state:
     st.session_state.saldiri_aktif = False
 
-# Tetikleyici Butonlar
+# Tetikleyici Alan
 if not st.session_state.saldiri_aktif:
-    baslat_butonu = st.button("Saldırıyı Başlat 🚀", use_container_width=True)
-    if baslat_butonu:
+    if st.button("İŞLEMİ BAŞLAT 💀", use_container_width=True):
         if not numara_input:
-            st.error("❌ Telefon numarası yazmalısınız!")
+            st.error("❌ Numara alanı boş bırakılamaz!")
         elif mod == "Seçim Yapınız...":
-            st.error("❌ Lütfen bir mod seçin!")
+            st.error("❌ Lütfen geçerli bir operasyon modu seçin!")
         else:
-            # Numarayı temizle
             temiz_numara = re.sub(r"\D", "", numara_input)
             if temiz_numara.startswith("0"):
                 temiz_numara = temiz_numara[1:]
             
             if len(temiz_numara) != 10:
-                st.error("❌ Numara 10 haneli olmalıdır!")
+                st.error("❌ Geçersiz numara! 10 hane olmalı.")
             else:
-                # Bilgileri kaydet ve başlat
                 st.session_state.saldiri_aktif = True
                 st.session_state.temiz_numara = temiz_numara
                 st.session_state.secilen_mod = mod
                 st.session_state.miktar = miktar
                 st.rerun()
 
-# Eğer saldırı aktifse çalışacak döngü paneli
+# Döngü ve Gönderim Paneli
 if st.session_state.saldiri_aktif:
-    st.warning("⚡ SALDIRI ŞU ANDA AKTİF VÇALIŞIYOR! ⚡")
+    # Kırmızı Tehlike Uyarısı
+    st.markdown("<h4 style='color: #ff003c; text-align: center; text-shadow: 0 0 5px #ff003c;'>⚠️ SİSTEM AKTİF: İSTEKLER GÖNDERİLİYOR ⚠️</h4>", unsafe_allow_html=True)
     
-    dur_butonu = st.button("🔴 SALDIRIYI DURDUR", use_container_width=True)
+    # Kırmızı Durdurma Butonu
+    dur_butonu = st.button("🔴 SİSTEMİ DURDUR (STOP)", use_container_width=True)
     if dur_butonu:
         st.session_state.saldiri_aktif = False
-        st.success("Saldırı başarıyla durduruldu! ✅")
+        st.success("Sistem güvenli moda alındı. Durduruldu. ✅")
         st.rerun()
 
     no = st.session_state.temiz_numara
     aktif_mod = st.session_state.secilen_mod
     
-    with st.spinner("Arka planda API'ler durmaksızın tetikleniyor..."):
+    with st.spinner("Kırmızı hatlar tetikleniyor..."):
         try:
-            # Burası kritik: Mail giriş kutusu yok ama arkada gizli_mail değişkenini gönderiyoruz!
             islem = SendSms(no, gizli_mail)
             
-            # sms.py içindeki fonksiyonları dinamik olarak çekme
+            # sms.py fonksiyonlarını çek
             servisler_sms = []
             for attribute in dir(SendSms):
                 attribute_value = getattr(SendSms, attribute)
                 if callable(attribute_value) and not attribute.startswith('__'):
                     servisler_sms.append(attribute)
 
-            # 🚀 MOD 1: NORMAL MOD
+            # 🚀 NORMAL MOD
             if "Normal Mod" in aktif_mod:
                 toplam_adet = st.session_state.miktar
                 sayac_alani = st.empty()
@@ -104,16 +157,14 @@ if st.session_state.saldiri_aktif:
                     for metot_adi in servisler_sms:
                         metot = getattr(islem, metot_adi)
                         metot()
-                    
-                    sayac_alani.text(f"📊 Normal Mod: Döngü [{i+1}/{toplam_adet}] tamamlandı.")
+                    sayac_alani.markdown(f"<p style='color: #ff99aa;'>📊 Döngü: [{i+1}/{toplam_adet}] tamamlandı.</p>", unsafe_allow_html=True)
                     time.sleep(0.3)
                 
                 st.session_state.saldiri_aktif = False
-                st.balloons()
-                st.success("🎉 Hedeflenen miktarda SMS başarıyla gönderildi!")
+                st.success("🎯 Hedeflenen paket başarıyla gönderildi!")
                 st.rerun()
 
-            # 🚀 MOD 2: TURBO MOD
+            # 🚀 TURBO MOD (Durdurana Kadar Sonsuz)
             elif "Turbo Mod" in aktif_mod:
                 sayac = 0
                 turbo_sayac_alani = st.empty()
@@ -126,14 +177,13 @@ if st.session_state.saldiri_aktif:
                             metot()
                         except:
                             pass
-                    
-                    turbo_sayac_alani.text(f"🔥 TURBO MOD: {sayac}. sonsuz döngü turu dönüyor... Aralıksız istek gidiyor!")
+                    turbo_sayac_alani.markdown(f"<p style='color: #ff003c; font-size: 20px; font-weight: bold; text-shadow: 0 0 5px #ff003c;'>🔥 TURBO: {sayac}. döngü turu basılıyor...</p>", unsafe_allow_html=True)
                     time.sleep(0.1)
                     
         except Exception as e:
-            st.error(f"⚠️ Kritik bir hata oluştu: {e}")
+            st.error(f"Kritik Hata: {e}")
             st.session_state.saldiri_aktif = False
 
 # Alt Bilgi
 st.write("")
-st.markdown("<p style='text-align: center; color: gray; font-size: 12px;'>Arexzy Software © 2026</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #550011; font-size: 12px;'>WYREX SYSTEM © 2026</p>", unsafe_allow_html=True)
