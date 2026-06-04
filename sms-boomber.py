@@ -10,7 +10,6 @@
 import streamlit as st
 import time
 import re
-import os
 from datetime import datetime
 
 # Streamlit uygulama pencerelerinin konfigürasyonu
@@ -20,13 +19,6 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="collapsed"
 )
-
-# Sunucu uyumlu ekran temizleme fonksiyonu (Hataları önlemek için)
-def ekranı_temizle():
-    try:
-        os.system('cls' if os.name == 'nt' else 'clear')
-    except:
-        pass
 
 # Modül kontrolü
 try:
@@ -196,15 +188,15 @@ if "saldiri_aktif" not in st.session_state:
 
 # Giriş Alanları
 numara_input = st.text_input("HEDEF KOORDİNAT (TELEFON NUMARASI):", placeholder="Örn: 5051234567")
-mail_input = st.text_input("E-POSTA ADRESİ (ZORUNLU PROTOKOL):", placeholder="Örn: test@gmail.com", value="arexzy_panel@gmail.com")
+mail_input = st.text_input("E-POSTA ADRESİ:", placeholder="Örn: test@gmail.com", value="arexzy_panel@gmail.com")
 
 mod = st.selectbox(
     "OPERASYON MODÜLÜ SEÇİNİZ:",
-    ["Seçim Yapınız...", "1- SMS Gönder (Normal Mod - Belirli İstek)", "2- SMS Gönder (Turbo Mod - Aşırı Yoğun Akış)"]
+    ["Seçim Yapınız...", "1- SMS Gönder (Normal Mod)", "2- SMS Gönder (Turbo Mod)"]
 )
 
 miktar = 0
-if mod == "1- SMS Gönder (Normal Mod - Belirli İstek)":
+if "Normal Mod" in mod:
     st.write("")
     miktar = st.slider("İLETİLECEK VERİ PAKETİ MİKTARI:", min_value=1, max_value=100, value=15)
 
@@ -235,28 +227,26 @@ def terminal_logu_uret(mesaj, durum_tipi="info"):
 if not st.session_state.saldiri_aktif:
     if st.button("SİSTEMİ TETİKLE / BAŞLAT ⚡", use_container_width=True):
         if not numara_input:
-            st.error("INTEGRITY ERROR: Hedef numara veritabanı boş bırakılamaz.")
-        elif not mail_input:
-            st.error("INTEGRITY ERROR: E-posta alanı boş bırakılamaz. Kodun çalışması için bu parametre zorunludur.")
+            st.error("INTEGRITY ERROR: Hedef numara boş bırakılamaz.")
         elif mod == "Seçim Yapınız...":
-            st.error("INTEGRITY ERROR: Yürütülecek operasyonel algoritma seçilmedi.")
+            st.error("INTEGRITY ERROR: Operasyon modu seçilmedi.")
         else:
             cleaned_number = re.sub(r"\D", "", numara_input)
             if cleaned_number.startswith("0"):
                 cleaned_number = cleaned_number[1:]
             
             if len(cleaned_number) != 10:
-                st.error("SECURITY DISCREPANCY: Numara standardı dışı veri tespiti (10 Hane Zorunludur).")
+                st.error("SECURITY DISCREPANCY: Numara 10 hane olmalıdır.")
             else:
                 st.session_state.saldiri_aktif = True
                 st.session_state.temiz_numara = cleaned_number
-                st.session_state.girilen_mail = mail_input
+                st.session_state.girilen_mail = mail_input if mail_input else "test@gmail.com"
                 st.session_state.secilen_mod = mod
                 st.session_state.miktar = miktar
                 st.rerun()
 
 if st.session_state.saldiri_aktif:
-    st.markdown("<p style='color: #ff1a22; text-align: center; font-weight: bold; font-size: 14px; letter-spacing: 2px;'>🔴 SYSTEM MATRIX ACTIVE: DISTRIBUTED DATA TRANSMISSION IN PROGRESS</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #ff1a22; text-align: center; font-weight: bold; font-size: 14px; letter-spacing: 2px;'>🔴 SYSTEM MATRIX ACTIVE: DATA TRANSMISSION IN PROGRESS</p>", unsafe_allow_html=True)
     
     if st.button("❌ OPERASYONU ACİL DURDUR (KILL SCRIPT)", use_container_width=True):
         st.session_state.saldiri_aktif = False
@@ -270,20 +260,19 @@ if st.session_state.saldiri_aktif:
     log_slot_2 = st.empty()
 
     try:
-        # 🚨 KRİTİK DÜZELTME: hem numara hem de mail parametreleri tam olarak sms.py'nin istediği sıra ile gönderiliyor!
         sms_instance = SendSms(target_no, target_mail)
+        # Sadece çağrılabilir fonksiyonları topluyoruz
         api_methods_pool = [attr for attr in dir(SendSms) if callable(getattr(SendSms, attr)) and not attr.startswith('__')]
-
-        ekranı_temizle()
 
         if "Normal Mod" in selected_sub_mod:
             loop_limit = st.session_state.miktar
             for current_loop_idx in range(loop_limit):
                 if not st.session_state.saldiri_aktif: break
-                for api_idx, specific_method_name in enumerate(api_methods_pool):
+                for specific_method_name in api_methods_pool:
                     if not st.session_state.saldiri_aktif: break
                     try:
-                        getattr(sms_instance, specific_method_name)()
+                        executable_api = getattr(sms_instance, specific_method_name)
+                        executable_api()
                         log_slot_1.markdown(terminal_logu_uret(f"API Veri Paketi Gönderildi -> [{specific_method_name.upper()}]", "success"), unsafe_allow_html=True)
                     except:
                         pass
