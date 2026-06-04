@@ -7,6 +7,19 @@
 ================================================================================
 """
 
+# ==============================================================================
+# 🚨 SUNUCUYU ALDATMA KATMANI (COLORAMA MODÜLÜNÜ SİSTEME ZORLA ENJEKTE ETME)
+# ==============================================================================
+import sys
+from types import ModuleType
+
+# Sunucuda colorama yoksa, sistem çökmesin diye arka planda sanal bir tane yaratıyoruz
+if 'colorama' not in sys.modules:
+    colorama_mock = ModuleType('colorama')
+    colorama_mock.Fore = type('Fore', (object,), {'LIGHTRED_EX': '', 'LIGHTGREEN_EX': ''})
+    colorama_mock.Style = type('Style', (object,), {'RESET_ALL': ''})
+    sys.modules['colorama'] = colorama_mock
+
 import streamlit as st
 import time
 import re
@@ -261,7 +274,6 @@ if st.session_state.saldiri_aktif:
 
     try:
         sms_instance = SendSms(target_no, target_mail)
-        # Sadece çağrılabilir fonksiyonları topluyoruz
         api_methods_pool = [attr for attr in dir(SendSms) if callable(getattr(SendSms, attr)) and not attr.startswith('__')]
 
         if "Normal Mod" in selected_sub_mod:
