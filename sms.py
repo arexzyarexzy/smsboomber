@@ -1,8 +1,13 @@
 import requests
 from random import choice, randint
 from string import ascii_lowercase
-from colorama import Fore, Style
 
+# Streamlit sunucusunda colorama hatası alınmaması için sahte (mock) sınıflar
+class Fore:
+    LIGHTRED_EX = ""
+    LIGHTGREEN_EX = ""
+class Style:
+    RESET_ALL = ""
 
 class SendSms():
     adet = 0
